@@ -20,6 +20,18 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
+#define DESIRED_LOW 800
+#define DESIRED_HIGH 1000
+
+#define PREDICT_LOW 800
+#define PREDICT_HIGH 1100
+
+#define PAUSE_TIME 5000
+#define WAIT_TIME  30
+
+bool 		g_bStop;
+bool 		g_bPause;
+	
 MainFrame *	MainFrame::m_pThis=NULL;
 
 MainFrame::MainFrame(wxWindow* parent)
@@ -50,11 +62,15 @@ MainFrame::MainFrame(wxWindow* parent)
 	m_DataPath = "D:/Dropbox/Rat_Lick/data/";
 #endif	
 	
+	m_DataCount = -1;
 	ShowSignal();
+	
+
 }
 
 MainFrame::~MainFrame()
 {
+	g_bStop = true;
 }
 
 void MainFrame::OnExit(wxCommandEvent& event)
@@ -72,6 +88,7 @@ void MainFrame::OnAbout(wxCommandEvent& event)
     info.SetDescription(_("Short description goes here"));
     ::wxAboutBox(info);
 }
+
 void MainFrame::OnDataShow(wxCommandEvent& event)
 {
 	ShowSignal();
@@ -80,9 +97,11 @@ void MainFrame::OnDataShow(wxCommandEvent& event)
 void MainFrame::ShowSignal()
 {
 	string 	strProfileName  = m_DataPath + "_labelData.csv";
-	
+	string 	strPredictName  = m_DataPath + "pred_w10o60.svm.csv";
 	LoadProfileData(strProfileName);
-	m_panelPlot->plotSignal(m_vSignalFD, m_vSmoothFD);	
+	LoadPredictData(strPredictName);
+	
+	m_panelPlot->plotSignal(m_vSignalFD, m_vSmoothFD, m_vDesired, m_vPredict);	
 	
 }
 bool MainFrame::LoadProfileData(std::string& filename)
@@ -98,7 +117,7 @@ bool MainFrame::LoadProfileData(std::string& filename)
 //	m_vFrameNo.clear(); 
 	m_vSignalFD.clear();
 	m_vSmoothFD.clear();
-	m_vLabel.clear();
+	m_vDesired.clear();
 	
 	char title [200];
 	fgets(title, 200, fp );
@@ -109,15 +128,119 @@ bool MainFrame::LoadProfileData(std::string& filename)
 		if(n!=3)  break;
 		m_vSignalFD.push_back(fd);		
 		m_vSmoothFD.push_back(smoothFD);
-		m_vLabel.push_back(label);
+		if(label ==0)
+			m_vDesired.push_back(DESIRED_LOW);
+		else
+			m_vDesired.push_back(DESIRED_HIGH);
 	}
 	fclose(fp);	
-	MainFrame::myMsgOutput( "LoadProfileData(): read _labelData.csv, size %d\n", m_vSignalFD.size() );	
+	
+	m_DataCount =  m_vSignalFD.size();
+	
+	MainFrame::myMsgOutput( "LoadProfileData(): read _labelData.csv, size %d\n",m_DataCount);	
 	return true;
 	
 }
+bool MainFrame::LoadPredictData(std::string& filename)
+{
+	FILE *fp = fopen(filename.c_str(), "r");
+	if(fp == NULL) {
+		wxString msg = "cannot open "+filename + "\n";
+		MainFrame::myMsgOutput( msg);		
+		wxMessageBox( msg,"Error", wxICON_ERROR);
+		return false;		
+	}	
+	
+	if(m_DataCount > 0)
+		m_vPredict.resize(m_DataCount, PREDICT_LOW);
+
+	int count = 0;
+	int old_start = -1;
+	char title [200];
+	fgets(title, 200, fp );
+	fgets(title, 200, fp );
+	while(!feof(fp)) {
+		int label, predict, start, end;
+
+		int n = fscanf(fp, "%*d,%d,%d,%d,%d", &label, &predict, &start, &end);
+		if(n!=4)  break;
+		if(predict ==1) {
+			for(int i=start; i<end; i++)
+				m_vPredict[i] = PREDICT_HIGH;			
+		}
+
+		if(start < old_start) break;
+		old_start = start;
+		count ++;
+	}
+	fclose(fp);	
+	MainFrame::myMsgOutput( "LoadPredictData(): count %d\n", count );	
+	return true;	
+}
+
 void MainFrame::OnMouseLeftDown(wxMouseEvent& event)
 {
 	myMsgOutput("OnMouseLeftDown\n");	
 	event.Skip();
+}
+
+void ShowVideoClip(int start)
+{
+	cv::VideoCapture vidCap;
+	double 		fps;
+	int waitTime = WAIT_TIME;
+	int frameNumber = 0;	
+	cv::Mat img_input;
+	string 	strVideoName  = MainFrame::m_pThis->m_DataPath + "1218(4).AVI";
+	vidCap.open(strVideoName);
+	if(vidCap.isOpened()==false) {
+		MainFrame::myMsgOutput( "Load ... " + strVideoName + " ERROR\n");
+		return;
+	}
+	MainFrame::myMsgOutput("ShowVideoClip from frame %d \n", start);
+
+	fps = vidCap.get(CV_CAP_PROP_FPS);
+	
+	g_bStop = g_bPause = false;
+	while(frameNumber < start){
+		frameNumber++;	
+		vidCap >> img_input;
+		if (img_input.empty()) break;
+	}
+
+	do{
+		if(g_bPause)  {
+			g_bPause = false;
+			cv::waitKey(PAUSE_TIME);
+		}		
+		if(g_bStop)  break;
+
+		
+		vidCap >> img_input;
+		if (img_input.empty()) break;	
+		cv::imshow("Video", img_input);
+		
+		float sec = frameNumber /fps;
+		int mm = sec / 60;
+		int ss = sec - mm*60;
+		wxString str;
+		str.Printf("Frame No. %d, %02d:%02d", frameNumber, mm, ss);
+		
+		wxStatusBar* statusBar = MainFrame::m_pThis->GetStatusBar() ;
+		statusBar->SetStatusText(str, 3);
+		
+		frameNumber++;
+		if(cv::waitKey(waitTime) >= 0) break;
+		
+	}while(1);			
+}
+void MainFrame::OnVideoPause(wxCommandEvent& event)
+{
+	g_bPause = true;
+	myMsgOutput( "OnVideoPause: wait %d milliseconds.\n", PAUSE_TIME);	
+}
+void MainFrame::OnVideoStop(wxCommandEvent& event)
+{
+	g_bStop = true;
+	myMsgOutput( "OnVideoStop\n");	
 }

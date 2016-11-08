@@ -5,6 +5,9 @@
 #include <vector>
 #include <deque>
 #include <opencv2/opencv.hpp>
+#include <opencv2/highgui/highgui.hpp>
+
+void ShowVideoClip(int start);
 
 using namespace std;
 class MainFrame : public MainFrameBaseClass
@@ -29,18 +32,21 @@ public:
 	
 	void ShowSignal();
 	bool LoadProfileData(std::string& filename);
-	
+	bool LoadPredictData(std::string& filename);
 	
 	static MainFrame *	m_pThis;
 	std::string 	m_DataPath;
-	
+	int				m_DataCount;
+
 //	std::vector<int>  		m_vFrameNo; 
-	std::vector<double>  	m_vSignalFD;
-	std::vector<double>  	m_vSmoothFD;	
-	std::vector<int>  		m_vLabel;
-//	std::vector<Centroid>  	m_vCentroid;
+	std::vector<float>  	m_vSignalFD;
+	std::vector<float>  	m_vSmoothFD;	
+	std::vector<float>  	m_vDesired;
+	std::vector<float>  	m_vPredict;
 	
 protected:
+    virtual void OnVideoPause(wxCommandEvent& event);
+    virtual void OnVideoStop(wxCommandEvent& event);
     virtual void OnMouseLeftDown(wxMouseEvent& event);
     virtual void OnDataShow(wxCommandEvent& event);
 };

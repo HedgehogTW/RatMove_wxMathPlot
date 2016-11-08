@@ -4,8 +4,8 @@
 // Do not modify this file by hand!
 //////////////////////////////////////////////////////////////////////
 
-#ifndef _RATMOVE_WXCRAFTER_BASE_CLASSES_H
-#define _RATMOVE_WXCRAFTER_BASE_CLASSES_H
+#ifndef _RATMOVE_WXMATHPLOT_WXCRAFTER_BASE_CLASSES_H
+#define _RATMOVE_WXMATHPLOT_WXCRAFTER_BASE_CLASSES_H
 
 #include <wx/settings.h>
 #include <wx/xrc/xmlres.h>
@@ -47,6 +47,7 @@ class MainFrameBaseClass : public wxFrame
 public:
     enum {
         wxID_DATA_SHOW = 10001,
+        wxID_PAUSE = 10002,
     };
 protected:
     wxMenuBar* m_menuBar;
@@ -69,6 +70,8 @@ protected:
     virtual void OnExit(wxCommandEvent& event) { event.Skip(); }
     virtual void OnDataShow(wxCommandEvent& event) { event.Skip(); }
     virtual void OnAbout(wxCommandEvent& event) { event.Skip(); }
+    virtual void OnVideoStop(wxCommandEvent& event) { event.Skip(); }
+    virtual void OnVideoPause(wxCommandEvent& event) { event.Skip(); }
     virtual void OnMouseLeftDown(wxMouseEvent& event) { event.Skip(); }
 
 public:

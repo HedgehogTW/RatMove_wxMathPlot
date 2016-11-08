@@ -8,6 +8,10 @@
 #include "mathplot.h"
 #include <vector>
 
+#define GTNUM	11
+extern int lickRangeLow[];
+extern int lickRangeUp[];
+
 using namespace std;
 class MyPlot : public wxPanel
 {
@@ -18,7 +22,8 @@ public:
 	~MyPlot();
 
 	void Init();
-	void plotSignal(vector<double> &fd, vector<double>& smoothFD);
+	void plotSignal(vector<float> &fd, vector<float>& smoothFD, 
+					vector<float>& desired, vector<float>& predict);
 //	wxBoxSizer *topsizer;
 	mpWindow        *m_plot;	
 private:	
@@ -31,37 +36,39 @@ public:
 	virtual bool IsCanvasWindow() const;
 };
 
-class MySIN : public mpFX
+class DesiredLabel : public mpFX //mpAX
 {
-    double m_freq, m_amp;
+ //   int m_x;
 public:
-    MySIN(double freq, double amp) : mpFX( wxT("f(x) = SIN(x)"), mpALIGN_LEFT) { m_freq=freq; m_amp=amp; m_drawOutsideMargins = false; }
-    virtual double GetY( double x ) { return m_amp * sin(x/6.283185/m_freq); }
-    virtual double GetMinY() { return -m_amp; }
-    virtual double GetMaxY() { return  m_amp; }
+    DesiredLabel() : mpFX( wxT("Desired Label")) {  }
+
+    virtual float GetY( float /*int ?? */ x )
+    {
+		bool bLick = false;
+		for(int i=0; i<GTNUM; i++) {
+			if(x >=lickRangeLow[i] && x <= lickRangeUp[i]) {				
+				bLick = true;
+				break;
+			}
+		}
+		
+        if (bLick)
+            return 1000;
+        else
+            return 500;
+    }
 };
 
-// MyCOSinverse
-
-class MyCOSinverse : public mpFY
-{
-    double m_freq, m_amp;
-public:
-    MyCOSinverse(double freq, double amp) : mpFY( wxT("g(y) = COS(y)"), mpALIGN_BOTTOM) { m_freq=freq; m_amp=amp; m_drawOutsideMargins = false;}
-    virtual double GetX( double y ) { return m_amp * cos(y/6.283185/m_freq); }
-    virtual double GetMinX() { return -m_amp; }
-    virtual double GetMaxX() { return  m_amp; }
-};
 
 // MyLissajoux
 
 class MyLissajoux : public mpFXY
 {
-    double m_rad;
+    float m_rad;
     int    m_idx;
 public:
-    MyLissajoux(double rad) : mpFXY( wxT("Lissajoux")) { m_rad=rad; m_idx=0; m_drawOutsideMargins = false;}
-    virtual bool GetNextXY( double & x, double & y )
+    MyLissajoux(float rad) : mpFXY( wxT("Lissajoux")) { m_rad=rad; m_idx=0; m_drawOutsideMargins = false;}
+    virtual bool GetNextXY( float & x, float & y )
     {
         if (m_idx < 360)
         {
@@ -76,10 +83,10 @@ public:
         }
     }
     virtual void Rewind() { m_idx=0; }
-    virtual double GetMinX() { return -m_rad; }
-    virtual double GetMaxX() { return  m_rad; }
-    virtual double GetMinY() { return -m_rad; }
-    virtual double GetMaxY() { return  m_rad; }
+    virtual float GetMinX() { return -m_rad; }
+    virtual float GetMaxX() { return  m_rad; }
+    virtual float GetMinY() { return -m_rad; }
+    virtual float GetMaxY() { return  m_rad; }
 };
 
 #endif // MYPLOT_H

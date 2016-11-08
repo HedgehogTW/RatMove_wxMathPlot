@@ -32,7 +32,7 @@
     be function plots, scale rulers, or any other vector data visualisation. wxMathPlot provides two mpLayer implementations for plotting horizontal and vertical rulers: mpScaleX and mpScaleY.
     For convenient function plotting a series of classes derived from mpLayer are provided, like mpFX, mpProfile, mpLegend and so on. These base classes already come with plot code, user's own functions can be implemented by overriding just one member for retrieving a function value.
 
-    mpWindow has built-in support for mouse-based pan and zoom through intuitive combinations of buttons and the mouse wheel. It also incorporates an optional double buffering mechanism to avoid flicker. Plots can be easily sent to printer evices or exported in bitmap formats like PNG, BMP or JPEG.
+    mpWindow has built-in support for mouse-based pan and zoom through intuitive combinations of buttons and the mouse wheel. It also incorporates an optional float buffering mechanism to avoid flicker. Plots can be easily sent to printer evices or exported in bitmap formats like PNG, BMP or JPEG.
 
     @section coding Coding conventions
     wxMathPlot sticks to wxWindow's coding conventions. All entities defined by wxMathPlot have the prefix <i>mp</i>.
@@ -168,22 +168,22 @@ public:
     /** Get inclusive left border of bounding box.
         @return Value
     */
-    virtual double GetMinX() { return -1.0; }
+    virtual float GetMinX() { return -1.0; }
 
     /** Get inclusive right border of bounding box.
         @return Value
     */
-    virtual double GetMaxX() { return  1.0; }
+    virtual float GetMaxX() { return  1.0; }
 
     /** Get inclusive bottom border of bounding box.
         @return Value
     */
-    virtual double GetMinY() { return -1.0; }
+    virtual float GetMinY() { return -1.0; }
 
     /** Get inclusive top border of bounding box.
         @return Value
     */
-    virtual double GetMaxY() { return  1.0; }
+    virtual float GetMaxY() { return  1.0; }
 
     /** Plot given view of layer to the given device context.
         An implementation of this function has to transform layer coordinates to
@@ -529,7 +529,7 @@ public:
         @param x Argument
         @return Function value
     */
-    virtual double GetY( double x ) = 0;
+    virtual float GetY( float x ) = 0;
 
     /** Layer plot handler.
         This implementation will plot the function in the visible area and
@@ -561,7 +561,7 @@ public:
         @param y Argument
         @return Function value
     */
-    virtual double GetX( double y ) = 0;
+    virtual float GetX( float y ) = 0;
 
     /** Layer plot handler.
         This implementation will plot the function in the visible area and
@@ -599,7 +599,7 @@ public:
         @param x Returns X value
         @param y Returns Y value
     */
-    virtual bool GetNextXY(double & x, double & y) = 0;
+    virtual bool GetNextXY(float & x, float & y) = 0;
 
     /** Layer plot handler.
         This implementation will plot the locus in the visible area and
@@ -643,7 +643,7 @@ public:
         @param x Argument
         @return Function value
     */
-    virtual double GetY( double x ) = 0;
+    virtual float GetY( float x ) = 0;
 
     /** Layer plot handler.
         This implementation will plot the function in the visible area and
@@ -807,7 +807,7 @@ typedef std::deque<mpLayer*> wxLayerList;
     externally.
 
     Since wxMathPlot version 0.03, the mpWindow incorporates the following features:
-        - DoubleBuffering (Default=disabled): Can be set with EnableDoubleBuffer
+        - floatBuffering (Default=disabled): Can be set with EnablefloatBuffer
         - Mouse based pan/zoom (Default=enabled): Can be set with EnableMousePanZoom.
 
     The mouse commands can be visualized by the user through the popup menu, and are:
@@ -876,29 +876,29 @@ public:
         See @ref mpLayer::Plot "rules for coordinate transformation"
         @return Scale
     */
-    double GetXscl() { return m_scaleX; }
-    double GetScaleX(void) const{ return m_scaleX; }; // Schaling's method: maybe another method esists with the same name
+    float GetXscl() { return m_scaleX; }
+    float GetScaleX(void) const{ return m_scaleX; }; // Schaling's method: maybe another method esists with the same name
 
     /** Get current view's Y scale.
         See @ref mpLayer::Plot "rules for coordinate transformation"
         @return Scale
     */
-    double GetYscl() const { return m_scaleY; }
-    double GetScaleY(void) const { return m_scaleY; } // Schaling's method: maybe another method exists with the same name
+    float GetYscl() const { return m_scaleY; }
+    float GetScaleY(void) const { return m_scaleY; } // Schaling's method: maybe another method exists with the same name
 
     /** Get current view's X position.
         See @ref mpLayer::Plot "rules for coordinate transformation"
         @return X Position in layer coordinate system, that corresponds to the center point of the view.
     */
-    double GetXpos() const { return m_posX; }
-    double GetPosX(void) const { return m_posX; }
+    float GetXpos() const { return m_posX; }
+    float GetPosX(void) const { return m_posX; }
 
     /** Get current view's Y position.
         See @ref mpLayer::Plot "rules for coordinate transformation"
         @return Y Position in layer coordinate system, that corresponds to the center point of the view.
     */
-    double GetYpos() const { return m_posY; }
-    double GetPosY(void) const { return m_posY; }
+    float GetYpos() const { return m_posY; }
+    float GetPosY(void) const { return m_posY; }
 
     /** Get current view's X dimension in device context units.
         Usually this is equal to wxDC::GetSize, but it might differ thus mpLayer
@@ -921,28 +921,28 @@ public:
     /** Set current view's X scale and refresh display.
         @param scaleX New scale, must not be 0.
     */
-    void SetScaleX(double scaleX);
+    void SetScaleX(float scaleX);
 
     /** Set current view's Y scale and refresh display.
         @param scaleY New scale, must not be 0.
     */
-    void SetScaleY(double scaleY) { if (scaleY!=0) m_scaleY=scaleY; UpdateAll(); }
+    void SetScaleY(float scaleY) { if (scaleY!=0) m_scaleY=scaleY; UpdateAll(); }
 
     /** Set current view's X position and refresh display.
         @param posX New position that corresponds to the center point of the view.
     */
-    void SetPosX(double posX) { m_posX=posX; UpdateAll(); }
+    void SetPosX(float posX) { m_posX=posX; UpdateAll(); }
 
     /** Set current view's Y position and refresh display.
         @param posY New position that corresponds to the center point of the view.
     */
-    void SetPosY(double posY) { m_posY=posY; UpdateAll(); }
+    void SetPosY(float posY) { m_posY=posY; UpdateAll(); }
 
     /** Set current view's X and Y position and refresh display.
         @param posX New position that corresponds to the center point of the view.
         @param posY New position that corresponds to the center point of the view.
     */
-    void SetPos( double posX, double posY) { m_posX=posX; m_posY=posY; UpdateAll(); }
+    void SetPos( float posX, float posY) { m_posX=posX; m_posY=posY; UpdateAll(); }
 
     /** Set current view's dimensions in device context units.
         Needed by plotting functions. It doesn't refresh display.
@@ -953,28 +953,28 @@ public:
     
     /** Converts mpWindow (screen) pixel coordinates into graph (floating point) coordinates, using current mpWindow position and scale.
       * @sa p2y,x2p,y2p */
-//     double p2x(wxCoord pixelCoordX, bool drawOutside = true ); // { return m_posX + pixelCoordX/m_scaleX; }
-    inline double p2x(wxCoord pixelCoordX ) { return m_posX + pixelCoordX/m_scaleX; }
+//     float p2x(wxCoord pixelCoordX, bool drawOutside = true ); // { return m_posX + pixelCoordX/m_scaleX; }
+    inline float p2x(wxCoord pixelCoordX ) { return m_posX + pixelCoordX/m_scaleX; }
 
     /** Converts mpWindow (screen) pixel coordinates into graph (floating point) coordinates, using current mpWindow position and scale.
       * @sa p2x,x2p,y2p */
-//     double p2y(wxCoord pixelCoordY, bool drawOutside = true ); //{ return m_posY - pixelCoordY/m_scaleY; }
-    inline double p2y(wxCoord pixelCoordY ) { return m_posY - pixelCoordY/m_scaleY; }
+//     float p2y(wxCoord pixelCoordY, bool drawOutside = true ); //{ return m_posY - pixelCoordY/m_scaleY; }
+    inline float p2y(wxCoord pixelCoordY ) { return m_posY - pixelCoordY/m_scaleY; }
 
     /** Converts graph (floating point) coordinates into mpWindow (screen) pixel coordinates, using current mpWindow position and scale.
       * @sa p2x,p2y,y2p */
-//     wxCoord x2p(double x, bool drawOutside = true); // { return (wxCoord) ( (x-m_posX) * m_scaleX); }
-    inline wxCoord x2p(double x) { return (wxCoord) ( (x-m_posX) * m_scaleX); }
+//     wxCoord x2p(float x, bool drawOutside = true); // { return (wxCoord) ( (x-m_posX) * m_scaleX); }
+    inline wxCoord x2p(float x) { return (wxCoord) ( (x-m_posX) * m_scaleX); }
 
     /** Converts graph (floating point) coordinates into mpWindow (screen) pixel coordinates, using current mpWindow position and scale.
       * @sa p2x,p2y,x2p */
-//     wxCoord y2p(double y, bool drawOutside = true); // { return (wxCoord) ( (m_posY-y) * m_scaleY); }
-    inline wxCoord y2p(double y) { return (wxCoord) ( (m_posY-y) * m_scaleY); }
+//     wxCoord y2p(float y, bool drawOutside = true); // { return (wxCoord) ( (m_posY-y) * m_scaleY); }
+    inline wxCoord y2p(float y) { return (wxCoord) ( (m_posY-y) * m_scaleY); }
 
 
-    /** Enable/disable the double-buffering of the window, eliminating the flicker (default=disabled).
+    /** Enable/disable the float-buffering of the window, eliminating the flicker (default=disabled).
      */
-    void EnableDoubleBuffer( bool enabled ) { m_enableDoubleBuffer = enabled; }
+    void EnablefloatBuffer( bool enabled ) { m_enablefloatBuffer = enabled; }
 
     /** Enable/disable the feature of pan/zoom with the mouse (default=enabled)
      */
@@ -1005,7 +1005,7 @@ public:
         pixel scales are computed accordingly. Also, in this case the passed borders are not saved 
         as the "desired borders", since this use will be invoked only when printing.
     */
-    void Fit(double xMin, double xMax, double yMin, double yMax,wxCoord *printSizeX=NULL,wxCoord *printSizeY=NULL);
+    void Fit(float xMin, float xMax, float yMin, float yMax,wxCoord *printSizeX=NULL,wxCoord *printSizeY=NULL);
 
     /** Zoom into current view and refresh display 
       * @param centerPoint The point (pixel coordinates) that will stay in the same position on the screen after the zoom (by default, the center of the mpWindow).
@@ -1051,26 +1051,26 @@ public:
 	/** Returns the left-border layer coordinate that the user wants the mpWindow to show (it may be not exactly the actual shown coordinate in the case of locked aspect ratio).
 	  * @sa Fit
    	  */
-	double GetDesiredXmin() {return m_desiredXmin; }
+	float GetDesiredXmin() {return m_desiredXmin; }
 
 	/** Returns the right-border layer coordinate that the user wants the mpWindow to show (it may be not exactly the actual shown coordinate in the case of locked aspect ratio).
 	  * @sa Fit
    	  */
-	double GetDesiredXmax() {return m_desiredXmax; }
+	float GetDesiredXmax() {return m_desiredXmax; }
 
 	/** Returns the bottom-border layer coordinate that the user wants the mpWindow to show (it may be not exactly the actual shown coordinate in the case of locked aspect ratio).
 	  * @sa Fit
    	  */
-	double GetDesiredYmin() {return m_desiredYmin; }
+	float GetDesiredYmin() {return m_desiredYmin; }
 
 	/** Returns the top layer-border coordinate that the user wants the mpWindow to show (it may be not exactly the actual shown coordinate in the case of locked aspect ratio).
 	  * @sa Fit
    	  */
-	double GetDesiredYmax() {return m_desiredYmax; }
+	float GetDesiredYmax() {return m_desiredYmax; }
 
 	/** Returns the bounding box coordinates
-		@param bbox Pointer to a 6-element double array where to store bounding box coordinates. */
-	void GetBoundingBox(double* bbox);
+		@param bbox Pointer to a 6-element float array where to store bounding box coordinates. */
+	void GetBoundingBox(float* bbox);
 	
     /** Enable/disable scrollbars
       @param status Set to true to show scrollbars */
@@ -1089,7 +1089,7 @@ public:
 
     /** This value sets the zoom steps whenever the user clicks "Zoom in/out" or performs zoom with the mouse wheel.
       *  It must be a number above unity. This number is used for zoom in, and its inverse for zoom out. Set to 1.5 by default. */
-    static double zoomIncrementalFactor;
+    static float zoomIncrementalFactor;
 
     /** Set window margins, creating a blank area where some kinds of layers cannot draw. This is useful for example to draw axes outside the area where the plots are drawn.
         @param top Top border
@@ -1201,14 +1201,14 @@ protected:
 	wxColour m_fgColour;	//!< Foreground Colour
 	wxColour m_axColour;	//!< Axes Colour
 
-    double m_minX;      //!< Global layer bounding box, left border incl.
-    double m_maxX;      //!< Global layer bounding box, right border incl.
-    double m_minY;      //!< Global layer bounding box, bottom border incl.
-    double m_maxY;      //!< Global layer bounding box, top border incl.
-    double m_scaleX;    //!< Current view's X scale
-    double m_scaleY;    //!< Current view's Y scale
-    double m_posX;      //!< Current view's X position
-    double m_posY;      //!< Current view's Y position
+    float m_minX;      //!< Global layer bounding box, left border incl.
+    float m_maxX;      //!< Global layer bounding box, right border incl.
+    float m_minY;      //!< Global layer bounding box, bottom border incl.
+    float m_maxY;      //!< Global layer bounding box, top border incl.
+    float m_scaleX;    //!< Current view's X scale
+    float m_scaleY;    //!< Current view's Y scale
+    float m_posX;      //!< Current view's X position
+    float m_posY;      //!< Current view's Y position
     int    m_scrX;      //!< Current view's X dimension
     int    m_scrY;      //!< Current view's Y dimension
     int    m_clickedX;  //!< Last mouse click X position, for centering and zooming the view
@@ -1216,14 +1216,14 @@ protected:
 
     /** These are updated in Fit() only, and may be different from the real borders (layer coordinates) only if lock aspect ratio is true.
       */
-    double m_desiredXmin,m_desiredXmax,m_desiredYmin,m_desiredYmax;
+    float m_desiredXmin,m_desiredXmax,m_desiredYmin,m_desiredYmax;
 
     int m_marginTop, m_marginRight, m_marginBottom, m_marginLeft;
 
-    int         m_last_lx,m_last_ly;   //!< For double buffering
-    wxMemoryDC  m_buff_dc;             //!< For double buffering
-    wxBitmap    *m_buff_bmp;            //!< For double buffering
-    bool        m_enableDoubleBuffer;  //!< For double buffering
+    int         m_last_lx,m_last_ly;   //!< For float buffering
+    wxMemoryDC  m_buff_dc;             //!< For float buffering
+    wxBitmap    *m_buff_bmp;            //!< For float buffering
+    bool        m_enablefloatBuffer;  //!< For float buffering
     bool        m_enableMouseNavigation;  //!< For pan/zoom with the mouse.
     bool        m_mouseMovedAfterRightClick;
     long        m_mouseRClick_X,m_mouseRClick_Y; //!< For the right button "drag" feature
@@ -1271,7 +1271,7 @@ public:
         Both vectors MUST be of the same length. This method DOES NOT refresh the mpWindow; do it manually.
       * @sa Clear
     */
-    void SetData( const std::vector<double> &xs,const std::vector<double> &ys);
+    void SetData( const std::vector<float> &xs,const std::vector<float> &ys);
 
     /** Clears all the data, leaving the layer empty.
       * @sa SetData
@@ -1281,7 +1281,7 @@ public:
 protected:
     /** The internal copy of the set of data to draw.
       */
-    std::vector<double>  m_xs,m_ys;
+    std::vector<float>  m_xs,m_ys;
 
     /** The internal counter for the "GetNextXY" interface
       */
@@ -1289,7 +1289,7 @@ protected:
 
     /** Loaded at SetData
       */
-    double              m_minX,m_maxX,m_minY,m_maxY;
+    float              m_minX,m_maxX,m_minY,m_maxY;
 
     /** Rewind value enumeration with mpFXY::GetNextXY.
         Overridden in this implementation.
@@ -1301,23 +1301,23 @@ protected:
         @param x Returns X value
         @param y Returns Y value
     */
-    bool GetNextXY(double & x, double & y);
+    bool GetNextXY(float & x, float & y);
 
     /** Returns the actual minimum X data (loaded in SetData).
       */
-    double GetMinX() { return m_minX; }
+    float GetMinX() { return m_minX; }
 
     /** Returns the actual minimum Y data (loaded in SetData).
       */
-    double GetMinY() { return m_minY; }
+    float GetMinY() { return m_minY; }
 
     /** Returns the actual maximum X data (loaded in SetData).
       */
-    double GetMaxX() { return m_maxX; }
+    float GetMaxX() { return m_maxX; }
 
     /** Returns the actual maximum Y data (loaded in SetData).
       */
-    double GetMaxY() { return m_maxY; }
+    float GetMaxY() { return m_maxY; }
 
     int     m_flags; //!< Holds label alignment
 
@@ -1409,7 +1409,7 @@ public:
 
     /** Get the current coordinate transformation.
       */
-    void GetCoordinateBase( double &x, double &y, double &phi ) const
+    void GetCoordinateBase( float &x, float &y, float &phi ) const
     {
         x = m_reference_x;
         y = m_reference_y;
@@ -1418,7 +1418,7 @@ public:
 
     /** Set the coordinate transformation (phi in radians, 0 means no rotation).
       */
-    void SetCoordinateBase( double x, double y, double phi = 0 )
+    void SetCoordinateBase( float x, float y, float phi = 0 )
     {
         m_reference_x = x;
         m_reference_y = y;
@@ -1431,19 +1431,19 @@ public:
 
     /** Get inclusive left border of bounding box.
     */
-    virtual double GetMinX() { return m_bbox_min_x; }
+    virtual float GetMinX() { return m_bbox_min_x; }
 
     /** Get inclusive right border of bounding box.
     */
-    virtual double GetMaxX() { return  m_bbox_max_x; }
+    virtual float GetMaxX() { return  m_bbox_max_x; }
 
     /** Get inclusive bottom border of bounding box.
     */
-    virtual double GetMinY() { return m_bbox_min_y; }
+    virtual float GetMinY() { return m_bbox_min_y; }
 
     /** Get inclusive top border of bounding box.
     */
-    virtual double GetMaxY() { return m_bbox_max_y; }
+    virtual float GetMaxY() { return m_bbox_max_y; }
 
     virtual void   Plot(wxDC & dc, mpWindow & w);
 
@@ -1457,25 +1457,25 @@ protected:
 
     /** The coordinates of the object (orientation "phi" is in radians).
       */
-    double m_reference_x,m_reference_y,m_reference_phi;
+    float m_reference_x,m_reference_y,m_reference_phi;
 
     /** A method for 2D translation and rotation, using the current transformation stored in m_reference_x,m_reference_y,m_reference_phi.
       */
-    void TranslatePoint( double x,double y, double &out_x, double &out_y );
+    void TranslatePoint( float x,float y, float &out_x, float &out_y );
 
     /** This contains the object points, in local coordinates (to be transformed by the current transformation).
       */
-    std::vector<double>  m_shape_xs,m_shape_ys;
+    std::vector<float>  m_shape_xs,m_shape_ys;
 
     /** The buffer for the translated & rotated points (to avoid recomputing them with each mpWindow refresh).
       *
       */
-    std::vector<double>  m_trans_shape_xs,m_trans_shape_ys;
+    std::vector<float>  m_trans_shape_xs,m_trans_shape_ys;
 
     /** The precomputed bounding box:
       * @sa ShapeUpdated
       */
-    double  m_bbox_min_x,m_bbox_max_x,m_bbox_min_y,m_bbox_max_y;
+    float  m_bbox_min_x,m_bbox_max_x,m_bbox_min_y,m_bbox_max_y;
 
     /** Must be called by the descendent class after updating the shape (m_shape_xs/ys), or when the transformation changes.
       *  This method updates the buffers m_trans_shape_xs/ys, and the precomputed bounding box.
@@ -1505,10 +1505,10 @@ public:
       * Initializes to a unity diagonal covariance matrix, a 95% confidence interval (2 sigmas), 32 segments, and a continuous plot (m_continuous=true).
       */
     mpCovarianceEllipse(
-        double cov_00 = 1,
-        double cov_11 = 1,
-        double cov_01 = 0,
-        double quantiles = 2,
+        float cov_00 = 1,
+        float cov_11 = 1,
+        float cov_01 = 0,
+        float quantiles = 2,
         int    segments = 32,
         const wxString & layerName = wxT("") ) :
             m_cov_00(cov_00),
@@ -1525,11 +1525,11 @@ public:
 
     virtual ~mpCovarianceEllipse() {}
 
-    double GetQuantiles() const { return m_quantiles; }
+    float GetQuantiles() const { return m_quantiles; }
 
     /** Set how many "quantiles" to draw, that is, the confidence interval of the ellipse (see above).
       */
-    void SetQuantiles(double q)
+    void SetQuantiles(float q)
     {
         m_quantiles=q;
         RecalculateShape();
@@ -1540,7 +1540,7 @@ public:
 
     /** Returns the elements of the current covariance matrix:
       */
-    void GetCovarianceMatrix( double &cov_00,double &cov_01,double &cov_11 ) const
+    void GetCovarianceMatrix( float &cov_00,float &cov_01,float &cov_11 ) const
     {
         cov_00 = m_cov_00;
         cov_01 = m_cov_01;
@@ -1549,7 +1549,7 @@ public:
 
     /** Changes the covariance matrix:
       */
-    void SetCovarianceMatrix( double cov_00,double cov_01,double cov_11 )
+    void SetCovarianceMatrix( float cov_00,float cov_01,float cov_11 )
     {
         m_cov_00 = cov_00;
         m_cov_01 = cov_01;
@@ -1560,8 +1560,8 @@ public:
 protected:
     /** The elements of the matrix (only 3 since cov(0,1)=cov(1,0) in any positive definite matrix).
       */
-    double m_cov_00,m_cov_11,m_cov_01;
-    double m_quantiles;
+    float m_cov_00,m_cov_11,m_cov_01;
+    float m_quantiles;
 
     /** The number of line segments that build up the ellipse.
       */
@@ -1598,8 +1598,8 @@ public:
       * @param closedShape If set to true, an additional segment will be added from the last to the first point.
       */
     void setPoints(
-        const std::vector<double>&  points_xs,
-        const std::vector<double>&  points_ys,
+        const std::vector<float>&  points_xs,
+        const std::vector<float>&  points_ys,
         bool                   closedShape=true );
 
 
@@ -1641,25 +1641,25 @@ public:
       *  @param lx The width in plot units.
       *  @param ly The height in plot units.
       */
-    void SetBitmap( const wxImage &inBmp, double x, double y, double lx, double ly );
+    void SetBitmap( const wxImage &inBmp, float x, float y, float lx, float ly );
 
     virtual bool HasBBox() { return true; }
 
     /** Get inclusive left border of bounding box.
     */
-    virtual double GetMinX() { return m_min_x; }
+    virtual float GetMinX() { return m_min_x; }
 
     /** Get inclusive right border of bounding box.
     */
-    virtual double GetMaxX() { return  m_max_x; }
+    virtual float GetMaxX() { return  m_max_x; }
 
     /** Get inclusive bottom border of bounding box.
     */
-    virtual double GetMinY() { return m_min_y; }
+    virtual float GetMinY() { return m_min_y; }
 
     /** Get inclusive top border of bounding box.
     */
-    virtual double GetMaxY() { return m_max_y; }
+    virtual float GetMaxY() { return m_max_y; }
 
     virtual void   Plot(wxDC & dc, mpWindow & w);
 
@@ -1683,7 +1683,7 @@ protected:
 
     /** The shape of the bitmap:
       */
-    double  m_min_x,m_max_x,m_min_y,m_max_y;
+    float  m_min_x,m_max_x,m_min_y,m_max_y;
 
 
 };
