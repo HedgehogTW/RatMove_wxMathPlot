@@ -29,6 +29,7 @@ void MyPlot::plotSignal(vector<float> &vecFD, vector<float>& vecSmoothFD,
 	mpFXYVector* vectorLayersmoothFD = new mpFXYVector(_("smoothFD"));
 	mpFXYVector* vectorLayerDesired = new mpFXYVector(_("Desired"));
 	mpFXYVector* vectorLayerPredict = new mpFXYVector(_("Predict"));
+	
 	// Create two vectors for x,y and fill them with data
 
 	int szSignal = vecFD.size();
@@ -64,7 +65,6 @@ void MyPlot::plotSignal(vector<float> &vecFD, vector<float>& vecSmoothFD,
 	wxPen vectorpenPredict(wxColour(0x006400), 1, wxSOLID);
 	vectorLayerPredict->SetPen(vectorpenPredict);
 	vectorLayerPredict->SetDrawOutsideMargins(false);
-
 	
 	wxClientDC dc(this);
 	int neww, newh;
@@ -90,7 +90,8 @@ void MyPlot::plotSignal(vector<float> &vecFD, vector<float>& vecSmoothFD,
     m_plot->AddLayer( vectorLayersmoothFD );
 	m_plot->AddLayer( vectorLayerPredict );
 	m_plot->AddLayer( vectorLayerDesired );	
-
+	
+	
     wxBrush hatch(wxColour(200,200,200), wxSOLID);
     m_plot->AddLayer( nfo = new mpInfoCoords(wxRect(400,20,10,40), wxTRANSPARENT_BRUSH)); //&hatch));
     nfo->SetVisible(false);

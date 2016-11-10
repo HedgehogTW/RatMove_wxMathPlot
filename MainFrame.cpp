@@ -25,6 +25,7 @@
 
 #define PREDICT_LOW 800
 #define PREDICT_HIGH 1100
+#define LABEL_HIGH 1200
 
 #define PAUSE_TIME 5000
 #define WAIT_TIME  30
@@ -151,8 +152,9 @@ bool MainFrame::LoadPredictData(std::string& filename)
 		return false;		
 	}	
 	
-	if(m_DataCount > 0)
+	if(m_DataCount > 0) {
 		m_vPredict.resize(m_DataCount, PREDICT_LOW);
+	}
 
 	int count = 0;
 	int old_start = -1;
@@ -184,12 +186,20 @@ void MainFrame::OnMouseLeftDown(wxMouseEvent& event)
 	event.Skip();
 }
 
+static void OnMouseVideo( int event, int x, int y, int, void* )
+{
+    if( event != cv::EVENT_LBUTTONDOWN )
+        return;
+
+	g_bStop = true;
+	MainFrame::myMsgOutput( "OnMouseVideo: Stop\n");
+}
+
 void ShowVideoClip(int start)
 {
 	cv::VideoCapture vidCap;
-	double 		fps;
 	int waitTime = WAIT_TIME;
-	int frameNumber = 0;	
+	
 	cv::Mat img_input;
 	string 	strVideoName  = MainFrame::m_pThis->m_DataPath + "1218(4).AVI";
 	vidCap.open(strVideoName);
@@ -197,24 +207,28 @@ void ShowVideoClip(int start)
 		MainFrame::myMsgOutput( "Load ... " + strVideoName + " ERROR\n");
 		return;
 	}
-	MainFrame::myMsgOutput("ShowVideoClip from frame %d \n", start);
 
-	fps = vidCap.get(CV_CAP_PROP_FPS);
+	double fps = vidCap.get(CV_CAP_PROP_FPS);
+	MainFrame::myMsgOutput("ShowVideoClip from frame %d \n", start);	
+	cv::namedWindow( "Video", 0 );
+	cv::setMouseCallback( "Video", OnMouseVideo, 0 );
 	
+	int frameNumber = 0;
 	g_bStop = g_bPause = false;
+	wxBeginBusyCursor();
 	while(frameNumber < start){
 		frameNumber++;	
 		vidCap >> img_input;
 		if (img_input.empty()) break;
 	}
-
+	wxEndBusyCursor();
+	
 	do{
 		if(g_bPause)  {
 			g_bPause = false;
 			cv::waitKey(PAUSE_TIME);
 		}		
 		if(g_bStop)  break;
-
 		
 		vidCap >> img_input;
 		if (img_input.empty()) break;	

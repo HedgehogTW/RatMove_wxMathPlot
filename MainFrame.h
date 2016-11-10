@@ -43,7 +43,7 @@ public:
 	std::vector<float>  	m_vSmoothFD;	
 	std::vector<float>  	m_vDesired;
 	std::vector<float>  	m_vPredict;
-	
+
 protected:
     virtual void OnVideoPause(wxCommandEvent& event);
     virtual void OnVideoStop(wxCommandEvent& event);
