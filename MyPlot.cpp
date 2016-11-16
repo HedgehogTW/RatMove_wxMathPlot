@@ -82,7 +82,18 @@ void MyPlot::plotSignal(vector<float> &vecFD, vector<float>& vecSmoothFD,
 	// Fake axes formatting to test arbitrary format string
 	// xaxis->SetLabelFormat(wxT("%.2f €"));
 	yaxis->SetLabelFormat(wxT("%.1f"));
-    m_plot->SetMargins(30, 30, 50, 80);
+	
+	
+	std::vector<float> car_xs(2), car_ys(2);
+	car_xs[0]=1500;  car_ys[0]=-100;
+    car_xs[1]=1500;   car_ys[1]=2000;
+    mpPolygon *lCar = new mpPolygon( wxT("car"));
+
+    lCar->SetPen( wxPen(*wxGREEN, 2, wxDOT_DASH) );
+    lCar->setPoints( car_xs,car_ys, true );
+	lCar->SetDrawOutsideMargins(false);    
+	
+	m_plot->SetMargins(30, 30, 50, 60);
 
     m_plot->AddLayer( xaxis );
     m_plot->AddLayer( yaxis );	
@@ -90,9 +101,9 @@ void MyPlot::plotSignal(vector<float> &vecFD, vector<float>& vecSmoothFD,
     m_plot->AddLayer( vectorLayersmoothFD );
 	m_plot->AddLayer( vectorLayerPredict );
 	m_plot->AddLayer( vectorLayerDesired );	
+    m_plot->AddLayer( lCar );	
 	
-	
-    wxBrush hatch(wxColour(200,200,200), wxSOLID);
+	wxBrush hatch(wxColour(200,200,200), wxSOLID);
     m_plot->AddLayer( nfo = new mpInfoCoords(wxRect(400,20,10,40), wxTRANSPARENT_BRUSH)); //&hatch));
     nfo->SetVisible(false);
     wxBrush hatch2(wxColour(163,208,212), wxSOLID);

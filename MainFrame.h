@@ -33,6 +33,7 @@ public:
 	void ShowSignal();
 	bool LoadProfileData(std::string& filename);
 	bool LoadPredictData(std::string& filename);
+	void Merge_Prune(std::vector<float> & vLabel, int low, int high);
 	
 	static MainFrame *	m_pThis;
 	std::string 	m_DataPath;
@@ -45,9 +46,15 @@ public:
 	std::vector<float>  	m_vPredict;
 
 protected:
+    virtual void OnScrollForward(wxCommandEvent& event);
+    virtual void OnScrollPause(wxCommandEvent& event);
+    virtual void OnScrollRewind(wxCommandEvent& event);
+    virtual void OnScrollStop(wxCommandEvent& event);
+    virtual void OnDataAutoScrolling(wxCommandEvent& event);
+    virtual void OnScrollbarTimer(wxTimerEvent& event);
     virtual void OnVideoPause(wxCommandEvent& event);
     virtual void OnVideoStop(wxCommandEvent& event);
     virtual void OnMouseLeftDown(wxMouseEvent& event);
-    virtual void OnDataShow(wxCommandEvent& event);
+    //virtual void OnDataShow(wxCommandEvent& event);
 };
 #endif // MAINFRAME_H

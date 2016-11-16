@@ -35,8 +35,8 @@ MainFrameBaseClass::MainFrameBaseClass(wxWindow* parent, wxWindowID id, const wx
     m_menuData = new wxMenu();
     m_menuBar->Append(m_menuData, _("Data"));
     
-    m_menuItemDataShow = new wxMenuItem(m_menuData, wxID_DATA_SHOW, _("Show"), wxT(""), wxITEM_NORMAL);
-    m_menuData->Append(m_menuItemDataShow);
+    m_menuItemDataAutoScroll = new wxMenuItem(m_menuData, wxID_DATA_AUTO_SCROLL, _("Auto Scrolling"), wxT(""), wxITEM_NORMAL);
+    m_menuData->Append(m_menuItemDataAutoScroll);
     
     m_nameHelp = new wxMenu();
     m_menuBar->Append(m_nameHelp, _("Help"));
@@ -58,23 +58,27 @@ MainFrameBaseClass::MainFrameBaseClass(wxWindow* parent, wxWindowID id, const wx
     
     m_auimgr19->AddPane(m_auibar21, wxAuiPaneInfo().Direction(wxAUI_DOCK_TOP).Layer(0).Row(0).Position(0).BestSize(42,42).MinSize(42,42).MaxSize(100,100).CaptionVisible(true).MaximizeButton(false).CloseButton(false).MinimizeButton(false).PinButton(false).ToolbarPane());
     
-    m_auibar21->AddTool(wxID_DATA_SHOW, _("Data Show"), wxXmlResource::Get()->LoadBitmap(wxT("pokeball")), wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT(""), NULL);
+    m_auibar21->AddTool(wxID_DATA_AUTO_SCROLL, _("Auto Scrolling"), wxXmlResource::Get()->LoadBitmap(wxT("play")), wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT(""), NULL);
     
-    m_auibar21->AddTool(wxID_STOP, _("Stop"), wxXmlResource::Get()->LoadBitmap(wxT("error")), wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT(""), NULL);
+    m_auibar21->AddTool(wxID_STOP, _("Stop"), wxXmlResource::Get()->LoadBitmap(wxT("stop")), wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT(""), NULL);
     
     m_auibar21->AddTool(wxID_PAUSE, _("Pause"), wxXmlResource::Get()->LoadBitmap(wxT("pause")), wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT(""), NULL);
+    
+    m_auibar21->AddTool(wxID_ANY, _("Rewind"), wxXmlResource::Get()->LoadBitmap(wxT("rewind(1)")), wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT(""), NULL);
+    
+    m_auibar21->AddTool(wxID_ANY, _("Forward"), wxXmlResource::Get()->LoadBitmap(wxT("fast-forward(1)")), wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT(""), NULL);
     m_auibar21->Realize();
     
     m_panelPlot = new MyPlot(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTAB_TRAVERSAL);
     
-    m_auimgr19->AddPane(m_panelPlot, wxAuiPaneInfo().Caption(_("Signal Plot")).Direction(wxAUI_DOCK_CENTER).Layer(0).Row(0).Position(0).BestSize(600,100).MinSize(600,100).MaxSize(600,100).CaptionVisible(true).MaximizeButton(false).CloseButton(false).MinimizeButton(false).PinButton(false));
+    m_auimgr19->AddPane(m_panelPlot, wxAuiPaneInfo().Caption(_("Signal Plot")).Direction(wxAUI_DOCK_CENTER).Layer(0).Row(0).Position(0).BestSize(700,100).MinSize(700,100).MaxSize(700,100).CaptionVisible(true).MaximizeButton(false).CloseButton(false).MinimizeButton(false).PinButton(false));
     
     wxBoxSizer* topsizer = new wxBoxSizer(wxVERTICAL);
     m_panelPlot->SetSizer(topsizer);
     
     m_panelTools = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTAB_TRAVERSAL);
     
-    m_auimgr19->AddPane(m_panelTools, wxAuiPaneInfo().Caption(_("Tools")).Direction(wxAUI_DOCK_LEFT).Layer(0).Row(0).Position(0).BestSize(100,100).MinSize(100,100).MaxSize(100,100).CaptionVisible(true).MaximizeButton(false).CloseButton(false).MinimizeButton(false).PinButton(false));
+    m_auimgr19->AddPane(m_panelTools, wxAuiPaneInfo().Caption(_("Tools")).Direction(wxAUI_DOCK_LEFT).Layer(0).Row(0).Position(0).BestSize(150,100).MinSize(150,100).MaxSize(150,100).CaptionVisible(true).MaximizeButton(false).CloseButton(false).MinimizeButton(false).PinButton(false));
     
     m_panelPara = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTAB_TRAVERSAL);
     
@@ -92,8 +96,10 @@ MainFrameBaseClass::MainFrameBaseClass(wxWindow* parent, wxWindowID id, const wx
     
     boxSizer29->Add(m_textCtrlMsg, 1, wxALL|wxEXPAND, WXC_FROM_DIP(5));
     
+    m_timerScroll = new wxTimer;
+    
     SetName(wxT("MainFrameBaseClass"));
-    SetSize(750,650);
+    SetSize(950,650);
     if (GetSizer()) {
          GetSizer()->Fit(this);
     }
@@ -111,24 +117,33 @@ MainFrameBaseClass::MainFrameBaseClass(wxWindow* parent, wxWindowID id, const wx
 #endif
     // Connect events
     this->Connect(m_menuItem7->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnExit), NULL, this);
-    this->Connect(m_menuItemDataShow->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnDataShow), NULL, this);
+    this->Connect(m_menuItemDataAutoScroll->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnDataAutoScrolling), NULL, this);
     this->Connect(m_menuItem9->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnAbout), NULL, this);
-    this->Connect(wxID_STOP, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnVideoStop), NULL, this);
-    this->Connect(wxID_PAUSE, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnVideoPause), NULL, this);
+    this->Connect(wxID_STOP, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollStop), NULL, this);
+    this->Connect(wxID_PAUSE, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollPause), NULL, this);
+    this->Connect(wxID_ANY, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollRewind), NULL, this);
+    this->Connect(wxID_ANY, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollForward), NULL, this);
     m_panelPlot->Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(MainFrameBaseClass::OnMouseLeftDown), NULL, this);
+    m_timerScroll->Connect(wxEVT_TIMER, wxTimerEventHandler(MainFrameBaseClass::OnScrollbarTimer), NULL, this);
     
 }
 
 MainFrameBaseClass::~MainFrameBaseClass()
 {
     this->Disconnect(m_menuItem7->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnExit), NULL, this);
-    this->Disconnect(m_menuItemDataShow->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnDataShow), NULL, this);
+    this->Disconnect(m_menuItemDataAutoScroll->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnDataAutoScrolling), NULL, this);
     this->Disconnect(m_menuItem9->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnAbout), NULL, this);
-    this->Disconnect(wxID_STOP, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnVideoStop), NULL, this);
-    this->Disconnect(wxID_PAUSE, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnVideoPause), NULL, this);
+    this->Disconnect(wxID_STOP, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollStop), NULL, this);
+    this->Disconnect(wxID_PAUSE, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollPause), NULL, this);
+    this->Disconnect(wxID_ANY, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollRewind), NULL, this);
+    this->Disconnect(wxID_ANY, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollForward), NULL, this);
     m_panelPlot->Disconnect(wxEVT_LEFT_DOWN, wxMouseEventHandler(MainFrameBaseClass::OnMouseLeftDown), NULL, this);
+    m_timerScroll->Disconnect(wxEVT_TIMER, wxTimerEventHandler(MainFrameBaseClass::OnScrollbarTimer), NULL, this);
     
     m_auimgr19->UnInit();
     delete m_auimgr19;
+
+    m_timerScroll->Stop();
+    wxDELETE( m_timerScroll );
 
 }

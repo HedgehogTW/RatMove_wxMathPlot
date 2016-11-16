@@ -27,6 +27,9 @@
 #define PREDICT_HIGH 1100
 #define LABEL_HIGH 1200
 
+#define MIN_SEGMENT 20
+#define MIN_GAP  20
+
 #define PAUSE_TIME 5000
 #define WAIT_TIME  30
 
@@ -52,6 +55,9 @@ MainFrame::MainFrame(wxWindow* parent)
 	m_pThis = this;
 	int statusWidth[4] = {100, 150, 140, 150};
 	m_statusBar->SetFieldsCount(4, statusWidth);
+	
+	SetSize(1000, 650);
+	Center();	
 	
 	wxFont font(wxFontInfo(9).FaceName("Helvetica").Italic());
 	m_auimgr19->GetArtProvider()->SetFont(wxAUI_DOCKART_CAPTION_FONT, font);
@@ -90,11 +96,11 @@ void MainFrame::OnAbout(wxCommandEvent& event)
     ::wxAboutBox(info);
 }
 
-void MainFrame::OnDataShow(wxCommandEvent& event)
-{
-	ShowSignal();
+//void MainFrame::OnDataShow(wxCommandEvent& event)
+//{
+//	ShowSignal();
 
-}
+//}
 void MainFrame::ShowSignal()
 {
 	string 	strProfileName  = m_DataPath + "_labelData.csv";
@@ -138,6 +144,8 @@ bool MainFrame::LoadProfileData(std::string& filename)
 	
 	m_DataCount =  m_vSignalFD.size();
 	
+	Merge_Prune(m_vDesired, DESIRED_LOW, DESIRED_HIGH);
+	
 	MainFrame::myMsgOutput( "LoadProfileData(): read _labelData.csv, size %d\n",m_DataCount);	
 	return true;
 	
@@ -176,10 +184,64 @@ bool MainFrame::LoadPredictData(std::string& filename)
 		count ++;
 	}
 	fclose(fp);	
+	
+	Merge_Prune(m_vPredict, PREDICT_LOW, PREDICT_HIGH);
+	
 	MainFrame::myMsgOutput( "LoadPredictData(): count %d\n", count );	
 	return true;	
 }
-
+void MainFrame::Merge_Prune(std::vector<float> & vLabel, int low, int high)
+{
+	int size = vLabel.size();
+	int len = 0;
+	bool bYes = false;
+	int start = 0;
+	
+	// merge
+	for(int i=0; i<size; i++) {		
+		if(vLabel[i] ==low ) {
+			if(bYes==false) start = i;
+			bYes = true;
+			len++;
+		}else {
+			if(bYes) {
+//				myMsgOutput( "Predict Len %d\n", len);
+				if(len < MIN_GAP) {
+					for(int k=start; k<=i; k++)
+						vLabel[k] = high;
+				}
+			}
+			bYes = false;
+			len = 0;
+		}		
+	}
+	
+	// prune
+	len = 0;
+	bYes = false;
+	start = 0;
+	
+	for(int i=0; i<size; i++) {
+		
+		if(vLabel[i] ==high ) {
+			if(bYes==false) start = i;
+			bYes = true;
+			len++;
+		}else {
+			if(bYes) {
+//				myMsgOutput( "Predict Len %d\n", len);
+				if(len < MIN_SEGMENT) {
+					for(int k=start; k<=i; k++)
+						vLabel[k] = low;
+				}
+			}
+			bYes = false;
+			len = 0;
+		}		
+	}
+	
+	
+}
 void MainFrame::OnMouseLeftDown(wxMouseEvent& event)
 {
 	myMsgOutput("OnMouseLeftDown\n");	
@@ -257,4 +319,41 @@ void MainFrame::OnVideoStop(wxCommandEvent& event)
 {
 	g_bStop = true;
 	myMsgOutput( "OnVideoStop\n");	
+}
+void MainFrame::OnScrollbarTimer(wxTimerEvent& event)
+{
+	mpWindow *pPlotWin = GetPanelPlot()->GetPlotWin();
+	
+	float x = pPlotWin->GetXpos();
+	myMsgOutput( "OnScrollbarTimer:  %f\n", x);
+	//wxPoint pt = pPlotWin->GetViewStart();
+	x += 100;
+	
+	pPlotWin->SetPosX(x);
+}
+void MainFrame::OnDataAutoScrolling(wxCommandEvent& event)
+{
+	mpWindow *pPlotWin = GetPanelPlot()->GetPlotWin();
+
+	do{
+		float x = pPlotWin->GetXpos();	
+		x += 100;
+		myMsgOutput( "OnDataAutoScrolling:  %f\n", x);
+		pPlotWin->SetPosX(x);
+		cv::waitKey(100);
+	}while(1);
+}
+void MainFrame::OnScrollForward(wxCommandEvent& event)
+{
+}
+void MainFrame::OnScrollPause(wxCommandEvent& event)
+{
+	myMsgOutput( "OnScrollPause: \n");
+}
+void MainFrame::OnScrollRewind(wxCommandEvent& event)
+{
+}
+void MainFrame::OnScrollStop(wxCommandEvent& event)
+{
+	myMsgOutput( "OnScrollStop: \n");
 }

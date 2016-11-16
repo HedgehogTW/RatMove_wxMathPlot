@@ -25,6 +25,7 @@
 #include <wx/panel.h>
 #include "MyPlot.h"
 #include <wx/textctrl.h>
+#include <wx/timer.h>
 #if wxVERSION_NUMBER >= 2900
 #include <wx/persist.h>
 #include <wx/persist/toplevel.h>
@@ -46,7 +47,7 @@ class MainFrameBaseClass : public wxFrame
 {
 public:
     enum {
-        wxID_DATA_SHOW = 10001,
+        wxID_DATA_AUTO_SCROLL = 10001,
         wxID_PAUSE = 10002,
     };
 protected:
@@ -54,7 +55,7 @@ protected:
     wxMenu* m_nameFile;
     wxMenuItem* m_menuItem7;
     wxMenu* m_menuData;
-    wxMenuItem* m_menuItemDataShow;
+    wxMenuItem* m_menuItemDataAutoScroll;
     wxMenu* m_nameHelp;
     wxMenuItem* m_menuItem9;
     wxStatusBar* m_statusBar;
@@ -65,14 +66,18 @@ protected:
     wxPanel* m_panelPara;
     wxPanel* m_panelMsg;
     wxTextCtrl* m_textCtrlMsg;
+    wxTimer* m_timerScroll;
 
 protected:
     virtual void OnExit(wxCommandEvent& event) { event.Skip(); }
-    virtual void OnDataShow(wxCommandEvent& event) { event.Skip(); }
+    virtual void OnDataAutoScrolling(wxCommandEvent& event) { event.Skip(); }
     virtual void OnAbout(wxCommandEvent& event) { event.Skip(); }
-    virtual void OnVideoStop(wxCommandEvent& event) { event.Skip(); }
-    virtual void OnVideoPause(wxCommandEvent& event) { event.Skip(); }
+    virtual void OnScrollStop(wxCommandEvent& event) { event.Skip(); }
+    virtual void OnScrollPause(wxCommandEvent& event) { event.Skip(); }
+    virtual void OnScrollRewind(wxCommandEvent& event) { event.Skip(); }
+    virtual void OnScrollForward(wxCommandEvent& event) { event.Skip(); }
     virtual void OnMouseLeftDown(wxMouseEvent& event) { event.Skip(); }
+    virtual void OnScrollbarTimer(wxTimerEvent& event) { event.Skip(); }
 
 public:
     wxMenuBar* GetMenuBar() { return m_menuBar; }
@@ -84,7 +89,8 @@ public:
     wxTextCtrl* GetTextCtrlMsg() { return m_textCtrlMsg; }
     wxPanel* GetPanelMsg() { return m_panelMsg; }
     wxAuiManager* GetAuimgr19() { return m_auimgr19; }
-    MainFrameBaseClass(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("My Frame"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(750,650), long style = wxCAPTION|wxRESIZE_BORDER|wxMAXIMIZE_BOX|wxMINIMIZE_BOX|wxSYSTEM_MENU|wxCLOSE_BOX);
+    wxTimer* GetTimerScroll() { return m_timerScroll; }
+    MainFrameBaseClass(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("My Frame"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(950,650), long style = wxCAPTION|wxRESIZE_BORDER|wxMAXIMIZE_BOX|wxMINIMIZE_BOX|wxSYSTEM_MENU|wxCLOSE_BOX);
     virtual ~MainFrameBaseClass();
 };
 

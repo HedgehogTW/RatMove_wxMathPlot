@@ -21,6 +21,7 @@ public:
 		
 	~MyPlot();
 
+	mpWindow * GetPlotWin() { return m_plot; }
 	void Init();
 	void plotSignal(vector<float> &fd, vector<float>& smoothFD, 
 					vector<float>& desired, vector<float>& predict);
