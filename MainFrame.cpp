@@ -323,37 +323,32 @@ void MainFrame::OnVideoStop(wxCommandEvent& event)
 void MainFrame::OnScrollbarTimer(wxTimerEvent& event)
 {
 	mpWindow *pPlotWin = GetPanelPlot()->GetPlotWin();
-	
+	int leftMar = pPlotWin->GetMarginLeft();
+	float xscale = pPlotWin->GetXscl();
 	float x = pPlotWin->GetXpos();
-	myMsgOutput( "OnScrollbarTimer:  %f\n", x);
-	//wxPoint pt = pPlotWin->GetViewStart();
-	x += 100;
 	
-	pPlotWin->SetPosX(x);
+//	myMsgOutput( "OnScrollbarTimer:  %f, scale %f %f , %d\n", x, xscale, leftMar/xscale, leftMar);
+
+	x += 200;
+	if(x < m_DataCount-2000 )
+		pPlotWin->SetPosX(x);
+	else
+		m_timerScroll->Stop();
 }
 void MainFrame::OnDataAutoScrolling(wxCommandEvent& event)
 {
-	mpWindow *pPlotWin = GetPanelPlot()->GetPlotWin();
+	m_timerScroll->Start(100);
+}
 
-	do{
-		float x = pPlotWin->GetXpos();	
-		x += 100;
-		myMsgOutput( "OnDataAutoScrolling:  %f\n", x);
-		pPlotWin->SetPosX(x);
-		cv::waitKey(100);
-	}while(1);
-}
-void MainFrame::OnScrollForward(wxCommandEvent& event)
-{
-}
 void MainFrame::OnScrollPause(wxCommandEvent& event)
 {
 	myMsgOutput( "OnScrollPause: \n");
+	m_timerScroll->Stop();
 }
-void MainFrame::OnScrollRewind(wxCommandEvent& event)
+
+void MainFrame::OnScrollNext(wxCommandEvent& event)
 {
 }
-void MainFrame::OnScrollStop(wxCommandEvent& event)
+void MainFrame::OnScrollPrevious(wxCommandEvent& event)
 {
-	myMsgOutput( "OnScrollStop: \n");
 }

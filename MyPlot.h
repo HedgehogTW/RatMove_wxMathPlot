@@ -22,14 +22,13 @@ public:
 	~MyPlot();
 
 	mpWindow * GetPlotWin() { return m_plot; }
-	void Init();
 	void plotSignal(vector<float> &fd, vector<float>& smoothFD, 
 					vector<float>& desired, vector<float>& predict);
 //	wxBoxSizer *topsizer;
 	mpWindow        *m_plot;	
 private:	
-    int axesPos[2];
-    bool ticks;
+//    int axesPos[2];
+//    bool ticks;
     mpInfoCoords *nfo; // mpInfoLayer* nfo;
 	
 public:

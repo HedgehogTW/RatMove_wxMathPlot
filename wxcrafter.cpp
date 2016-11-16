@@ -60,13 +60,11 @@ MainFrameBaseClass::MainFrameBaseClass(wxWindow* parent, wxWindowID id, const wx
     
     m_auibar21->AddTool(wxID_DATA_AUTO_SCROLL, _("Auto Scrolling"), wxXmlResource::Get()->LoadBitmap(wxT("play")), wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT(""), NULL);
     
-    m_auibar21->AddTool(wxID_STOP, _("Stop"), wxXmlResource::Get()->LoadBitmap(wxT("stop")), wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT(""), NULL);
-    
     m_auibar21->AddTool(wxID_PAUSE, _("Pause"), wxXmlResource::Get()->LoadBitmap(wxT("pause")), wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT(""), NULL);
     
-    m_auibar21->AddTool(wxID_ANY, _("Rewind"), wxXmlResource::Get()->LoadBitmap(wxT("rewind(1)")), wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT(""), NULL);
+    m_auibar21->AddTool(wxID_REWIND, _("Previous"), wxXmlResource::Get()->LoadBitmap(wxT("previous")), wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT(""), NULL);
     
-    m_auibar21->AddTool(wxID_ANY, _("Forward"), wxXmlResource::Get()->LoadBitmap(wxT("fast-forward(1)")), wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT(""), NULL);
+    m_auibar21->AddTool(wxID_FORWARD, _("Next"), wxXmlResource::Get()->LoadBitmap(wxT("skip")), wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT(""), NULL);
     m_auibar21->Realize();
     
     m_panelPlot = new MyPlot(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTAB_TRAVERSAL);
@@ -119,10 +117,9 @@ MainFrameBaseClass::MainFrameBaseClass(wxWindow* parent, wxWindowID id, const wx
     this->Connect(m_menuItem7->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnExit), NULL, this);
     this->Connect(m_menuItemDataAutoScroll->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnDataAutoScrolling), NULL, this);
     this->Connect(m_menuItem9->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnAbout), NULL, this);
-    this->Connect(wxID_STOP, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollStop), NULL, this);
     this->Connect(wxID_PAUSE, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollPause), NULL, this);
-    this->Connect(wxID_ANY, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollRewind), NULL, this);
-    this->Connect(wxID_ANY, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollForward), NULL, this);
+    this->Connect(wxID_REWIND, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollPrevious), NULL, this);
+    this->Connect(wxID_FORWARD, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollNext), NULL, this);
     m_panelPlot->Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(MainFrameBaseClass::OnMouseLeftDown), NULL, this);
     m_timerScroll->Connect(wxEVT_TIMER, wxTimerEventHandler(MainFrameBaseClass::OnScrollbarTimer), NULL, this);
     
@@ -133,10 +130,9 @@ MainFrameBaseClass::~MainFrameBaseClass()
     this->Disconnect(m_menuItem7->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnExit), NULL, this);
     this->Disconnect(m_menuItemDataAutoScroll->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnDataAutoScrolling), NULL, this);
     this->Disconnect(m_menuItem9->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnAbout), NULL, this);
-    this->Disconnect(wxID_STOP, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollStop), NULL, this);
     this->Disconnect(wxID_PAUSE, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollPause), NULL, this);
-    this->Disconnect(wxID_ANY, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollRewind), NULL, this);
-    this->Disconnect(wxID_ANY, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollForward), NULL, this);
+    this->Disconnect(wxID_REWIND, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollPrevious), NULL, this);
+    this->Disconnect(wxID_FORWARD, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollNext), NULL, this);
     m_panelPlot->Disconnect(wxEVT_LEFT_DOWN, wxMouseEventHandler(MainFrameBaseClass::OnMouseLeftDown), NULL, this);
     m_timerScroll->Disconnect(wxEVT_TIMER, wxTimerEventHandler(MainFrameBaseClass::OnScrollbarTimer), NULL, this);
     

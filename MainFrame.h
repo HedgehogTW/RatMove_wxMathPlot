@@ -46,10 +46,9 @@ public:
 	std::vector<float>  	m_vPredict;
 
 protected:
-    virtual void OnScrollForward(wxCommandEvent& event);
+    virtual void OnScrollNext(wxCommandEvent& event);
+    virtual void OnScrollPrevious(wxCommandEvent& event);
     virtual void OnScrollPause(wxCommandEvent& event);
-    virtual void OnScrollRewind(wxCommandEvent& event);
-    virtual void OnScrollStop(wxCommandEvent& event);
     virtual void OnDataAutoScrolling(wxCommandEvent& event);
     virtual void OnScrollbarTimer(wxTimerEvent& event);
     virtual void OnVideoPause(wxCommandEvent& event);

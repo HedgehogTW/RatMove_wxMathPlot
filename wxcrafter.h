@@ -49,6 +49,7 @@ public:
     enum {
         wxID_DATA_AUTO_SCROLL = 10001,
         wxID_PAUSE = 10002,
+        wxID_REWIND = 10003,
     };
 protected:
     wxMenuBar* m_menuBar;
@@ -72,10 +73,9 @@ protected:
     virtual void OnExit(wxCommandEvent& event) { event.Skip(); }
     virtual void OnDataAutoScrolling(wxCommandEvent& event) { event.Skip(); }
     virtual void OnAbout(wxCommandEvent& event) { event.Skip(); }
-    virtual void OnScrollStop(wxCommandEvent& event) { event.Skip(); }
     virtual void OnScrollPause(wxCommandEvent& event) { event.Skip(); }
-    virtual void OnScrollRewind(wxCommandEvent& event) { event.Skip(); }
-    virtual void OnScrollForward(wxCommandEvent& event) { event.Skip(); }
+    virtual void OnScrollPrevious(wxCommandEvent& event) { event.Skip(); }
+    virtual void OnScrollNext(wxCommandEvent& event) { event.Skip(); }
     virtual void OnMouseLeftDown(wxMouseEvent& event) { event.Skip(); }
     virtual void OnScrollbarTimer(wxTimerEvent& event) { event.Skip(); }
 
