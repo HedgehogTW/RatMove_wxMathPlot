@@ -34,10 +34,12 @@ public:
 	bool LoadProfileData(std::string& filename);
 	bool LoadPredictData(std::string& filename);
 	void Merge_Prune(std::vector<float> & vLabel, int low, int high);
+	int  checkLabel(int x);
 	
 	static MainFrame *	m_pThis;
 	std::string 	m_DataPath;
 	int				m_DataCount;
+	int				m_LeftWidth;
 
 //	std::vector<int>  		m_vFrameNo; 
 	std::vector<float>  	m_vSignalFD;

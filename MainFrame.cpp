@@ -70,6 +70,7 @@ MainFrame::MainFrame(wxWindow* parent)
 #endif	
 	
 	m_DataCount = -1;
+	m_LeftWidth = 0;
 	ShowSignal();
 	
 
@@ -110,6 +111,31 @@ void MainFrame::ShowSignal()
 	
 	m_panelPlot->plotSignal(m_vSignalFD, m_vSmoothFD, m_vDesired, m_vPredict);	
 	
+	mpWindow *pPlotWin = GetPanelPlot()->GetPlotWin();
+	int leftMar = pPlotWin->GetMarginLeft();
+	float xscale = pPlotWin->GetXscl();
+	m_LeftWidth = leftMar / xscale; 
+	int XScreen = pPlotWin->GetXScreen();
+	myMsgOutput("XScreen %d\n", XScreen);
+}
+
+int MainFrame::checkLabel(int x)
+{
+	bool bFound = false;
+	int i, start, end;
+	start = x;
+	end = x + 200;
+	for(i=start; i<end; i++)
+		if(m_vPredict[i] == PREDICT_HIGH) {
+			myMsgOutput("label %d\n", i);
+			bFound = true;
+			break;
+		}
+	
+	int ret = -1;
+	if(bFound) ret = i;
+	
+	return ret;
 }
 bool MainFrame::LoadProfileData(std::string& filename)
 {
@@ -323,12 +349,12 @@ void MainFrame::OnVideoStop(wxCommandEvent& event)
 void MainFrame::OnScrollbarTimer(wxTimerEvent& event)
 {
 	mpWindow *pPlotWin = GetPanelPlot()->GetPlotWin();
-	int leftMar = pPlotWin->GetMarginLeft();
-	float xscale = pPlotWin->GetXscl();
+//	int leftMar = pPlotWin->GetMarginLeft();
+//	float xscale = pPlotWin->GetXscl();
 	float x = pPlotWin->GetXpos();
 	
 //	myMsgOutput( "OnScrollbarTimer:  %f, scale %f %f , %d\n", x, xscale, leftMar/xscale, leftMar);
-
+	checkLabel(x + m_LeftWidth);
 	x += 200;
 	if(x < m_DataCount-2000 )
 		pPlotWin->SetPosX(x);
