@@ -24,6 +24,8 @@
 #include <wx/toolbar.h>
 #include <wx/panel.h>
 #include "MyPlot.h"
+#include <wx/tglbtn.h>
+#include <wx/button.h>
 #include <wx/textctrl.h>
 #include <wx/timer.h>
 #if wxVERSION_NUMBER >= 2900
@@ -64,6 +66,7 @@ protected:
     wxAuiToolBar* m_auibar21;
     MyPlot* m_panelPlot;
     wxPanel* m_panelTools;
+    wxToggleButton* m_toggleButtonCoord;
     wxPanel* m_panelPara;
     wxPanel* m_panelMsg;
     wxTextCtrl* m_textCtrlMsg;
@@ -76,7 +79,7 @@ protected:
     virtual void OnScrollPause(wxCommandEvent& event) { event.Skip(); }
     virtual void OnScrollPrevious(wxCommandEvent& event) { event.Skip(); }
     virtual void OnScrollNext(wxCommandEvent& event) { event.Skip(); }
-    virtual void OnMouseLeftDown(wxMouseEvent& event) { event.Skip(); }
+    virtual void OnToggleShowCoord(wxCommandEvent& event) { event.Skip(); }
     virtual void OnScrollbarTimer(wxTimerEvent& event) { event.Skip(); }
 
 public:
@@ -84,6 +87,7 @@ public:
     wxStatusBar* GetStatusBar() { return m_statusBar; }
     wxAuiToolBar* GetAuibar21() { return m_auibar21; }
     MyPlot* GetPanelPlot() { return m_panelPlot; }
+    wxToggleButton* GetToggleButtonCoord() { return m_toggleButtonCoord; }
     wxPanel* GetPanelTools() { return m_panelTools; }
     wxPanel* GetPanelPara() { return m_panelPara; }
     wxTextCtrl* GetTextCtrlMsg() { return m_textCtrlMsg; }

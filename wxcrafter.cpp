@@ -78,6 +78,14 @@ MainFrameBaseClass::MainFrameBaseClass(wxWindow* parent, wxWindowID id, const wx
     
     m_auimgr19->AddPane(m_panelTools, wxAuiPaneInfo().Caption(_("Tools")).Direction(wxAUI_DOCK_LEFT).Layer(0).Row(0).Position(0).BestSize(150,100).MinSize(150,100).MaxSize(150,100).CaptionVisible(true).MaximizeButton(false).CloseButton(false).MinimizeButton(false).PinButton(false));
     
+    wxBoxSizer* boxSizer63 = new wxBoxSizer(wxVERTICAL);
+    m_panelTools->SetSizer(boxSizer63);
+    
+    m_toggleButtonCoord = new wxToggleButton(m_panelTools, wxID_ANY, _("Show Coord."), wxDefaultPosition, wxDLG_UNIT(m_panelTools, wxSize(-1,-1)), 0);
+    m_toggleButtonCoord->SetValue(false);
+    
+    boxSizer63->Add(m_toggleButtonCoord, 0, wxALL, WXC_FROM_DIP(5));
+    
     m_panelPara = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTAB_TRAVERSAL);
     
     m_auimgr19->AddPane(m_panelPara, wxAuiPaneInfo().Caption(_("Parameter Setting")).Direction(wxAUI_DOCK_BOTTOM).Layer(0).Row(0).Position(0).BestSize(50,100).MinSize(50,100).MaxSize(50,100).CaptionVisible(true).MaximizeButton(false).CloseButton(false).MinimizeButton(false).PinButton(false));
@@ -120,7 +128,7 @@ MainFrameBaseClass::MainFrameBaseClass(wxWindow* parent, wxWindowID id, const wx
     this->Connect(wxID_PAUSE, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollPause), NULL, this);
     this->Connect(wxID_REWIND, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollPrevious), NULL, this);
     this->Connect(wxID_FORWARD, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollNext), NULL, this);
-    m_panelPlot->Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(MainFrameBaseClass::OnMouseLeftDown), NULL, this);
+    m_toggleButtonCoord->Connect(wxEVT_COMMAND_TOGGLEBUTTON_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnToggleShowCoord), NULL, this);
     m_timerScroll->Connect(wxEVT_TIMER, wxTimerEventHandler(MainFrameBaseClass::OnScrollbarTimer), NULL, this);
     
 }
@@ -133,7 +141,7 @@ MainFrameBaseClass::~MainFrameBaseClass()
     this->Disconnect(wxID_PAUSE, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollPause), NULL, this);
     this->Disconnect(wxID_REWIND, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollPrevious), NULL, this);
     this->Disconnect(wxID_FORWARD, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollNext), NULL, this);
-    m_panelPlot->Disconnect(wxEVT_LEFT_DOWN, wxMouseEventHandler(MainFrameBaseClass::OnMouseLeftDown), NULL, this);
+    m_toggleButtonCoord->Disconnect(wxEVT_COMMAND_TOGGLEBUTTON_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnToggleShowCoord), NULL, this);
     m_timerScroll->Disconnect(wxEVT_TIMER, wxTimerEventHandler(MainFrameBaseClass::OnScrollbarTimer), NULL, this);
     
     m_auimgr19->UnInit();

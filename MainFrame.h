@@ -7,7 +7,7 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-void ShowVideoClip(int start);
+
 
 using namespace std;
 class MainFrame : public MainFrameBaseClass
@@ -34,12 +34,14 @@ public:
 	bool LoadProfileData(std::string& filename);
 	bool LoadPredictData(std::string& filename);
 	void Merge_Prune(std::vector<float> & vLabel, int low, int high);
-	int  checkLabel(int x);
+	int  checkLabel(int x, int& lick_start, int& lick_end);
+	void PlayVideoClip(int start, int end);
 	
 	static MainFrame *	m_pThis;
 	std::string 	m_DataPath;
 	int				m_DataCount;
-	int				m_LeftWidth;
+	float			m_LeftWidth;
+	int				m_CenterX;
 
 //	std::vector<int>  		m_vFrameNo; 
 	std::vector<float>  	m_vSignalFD;
@@ -48,6 +50,7 @@ public:
 	std::vector<float>  	m_vPredict;
 
 protected:
+    virtual void OnToggleShowCoord(wxCommandEvent& event);
     virtual void OnScrollNext(wxCommandEvent& event);
     virtual void OnScrollPrevious(wxCommandEvent& event);
     virtual void OnScrollPause(wxCommandEvent& event);
@@ -55,7 +58,7 @@ protected:
     virtual void OnScrollbarTimer(wxTimerEvent& event);
     virtual void OnVideoPause(wxCommandEvent& event);
     virtual void OnVideoStop(wxCommandEvent& event);
-    virtual void OnMouseLeftDown(wxMouseEvent& event);
+
     //virtual void OnDataShow(wxCommandEvent& event);
 };
 #endif // MAINFRAME_H

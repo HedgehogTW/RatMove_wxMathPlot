@@ -220,9 +220,9 @@ void mpInfoCoords::UpdateInfo(mpWindow& w, wxEvent& event)
    wxGTK instead works perfectly with it.
    Info on wxForum: http://wxforum.shadonet.com/viewtopic.php?t=3451&highlight=drawtext+eol */
 #ifdef _WINDOWS
-        m_content.Printf(wxT("x = %f y = %f"), w.p2x(mouseX), w.p2y(mouseY));
+        m_content.Printf(wxT("x = %.2f y = %.2f"), w.p2x(mouseX), w.p2y(mouseY));
 #else
-		m_content.Printf(wxT("x = %f\ny = %f"), w.p2x(mouseX), w.p2y(mouseY));
+		m_content.Printf(wxT("x = %.2f\ny = %.2f"), w.p2x(mouseX), w.p2y(mouseY));
 #endif
     }
 }
@@ -254,8 +254,10 @@ void mpInfoCoords::Plot(wxDC & dc, mpWindow & w)
         dc.SetFont(m_font);
         int textX, textY;
         dc.GetTextExtent(m_content, &textX, &textY);
-        if (m_dim.width < textX + 10) m_dim.width = textX + 10;
+		textX /=2;
+        if (m_dim.width < textX + 15) m_dim.width = textX + 15;
         if (m_dim.height < textY + 10) m_dim.height = textY + 10;
+
         dc.DrawRectangle(m_dim.x, m_dim.y, m_dim.width, m_dim.height);
         dc.DrawText(m_content, m_dim.x + 5, m_dim.y + 5);
     }
@@ -1391,7 +1393,7 @@ void mpWindow::OnMouseLeftRelease (wxMouseEvent &event)
             }*/
 
 			//MainFrame::myMsgOutput("ShowVideoClip from %d %f\n", m_mouseLClick_X, p2x(m_mouseLClick_X));	
-			ShowVideoClip(p2x(m_mouseLClick_X));
+//			ShowVideoClip(p2x(m_mouseLClick_X));
         } 
     }
     event.Skip();

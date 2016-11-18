@@ -24,12 +24,18 @@ public:
 	mpWindow * GetPlotWin() { return m_plot; }
 	void plotSignal(vector<float> &fd, vector<float>& smoothFD, 
 					vector<float>& desired, vector<float>& predict);
+	
+	void SetInfoCoordsVisible(bool bVisible) { m_nfo->SetVisible(bVisible); }
+	mpMovableObject*  GetLineObjPtr() { return m_pLine; }
 //	wxBoxSizer *topsizer;
-	mpWindow        *m_plot;	
+	mpWindow *      m_plot;	
+	mpPolygon*		m_pLine;
+
 private:	
+    mpInfoCoords *	m_nfo; // mpInfoLayer* nfo;
 //    int axesPos[2];
 //    bool ticks;
-    mpInfoCoords *nfo; // mpInfoLayer* nfo;
+
 	
 public:
 	virtual bool HasTransparentBackground();

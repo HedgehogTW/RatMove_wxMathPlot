@@ -114,29 +114,16 @@ void MainFrame::ShowSignal()
 	mpWindow *pPlotWin = GetPanelPlot()->GetPlotWin();
 	int leftMar = pPlotWin->GetMarginLeft();
 	float xscale = pPlotWin->GetXscl();
-	m_LeftWidth = leftMar / xscale; 
+	m_LeftWidth = leftMar / xscale ; 
 	int XScreen = pPlotWin->GetXScreen();
-	myMsgOutput("XScreen %d\n", XScreen);
+	m_CenterX = (XScreen-leftMar )/ (2*xscale);
+	myMsgOutput("XScreen %d, Xscale %f, %f\n", XScreen, xscale, XScreen/ xscale);
+	myMsgOutput("leftMar %d, Xscale %f, %f, centerX %d\n", leftMar, xscale, leftMar/ xscale, m_CenterX);
+	
+	
 }
 
-int MainFrame::checkLabel(int x)
-{
-	bool bFound = false;
-	int i, start, end;
-	start = x;
-	end = x + 200;
-	for(i=start; i<end; i++)
-		if(m_vPredict[i] == PREDICT_HIGH) {
-			myMsgOutput("label %d\n", i);
-			bFound = true;
-			break;
-		}
-	
-	int ret = -1;
-	if(bFound) ret = i;
-	
-	return ret;
-}
+
 bool MainFrame::LoadProfileData(std::string& filename)
 {
 	FILE *fp = fopen(filename.c_str(), "r");
@@ -268,11 +255,6 @@ void MainFrame::Merge_Prune(std::vector<float> & vLabel, int low, int high)
 	
 	
 }
-void MainFrame::OnMouseLeftDown(wxMouseEvent& event)
-{
-	myMsgOutput("OnMouseLeftDown\n");	
-	event.Skip();
-}
 
 static void OnMouseVideo( int event, int x, int y, int, void* )
 {
@@ -283,7 +265,7 @@ static void OnMouseVideo( int event, int x, int y, int, void* )
 	MainFrame::myMsgOutput( "OnMouseVideo: Stop\n");
 }
 
-void ShowVideoClip(int start)
+void MainFrame::PlayVideoClip(int start, int end)
 {
 	cv::VideoCapture vidCap;
 	int waitTime = WAIT_TIME;
@@ -301,6 +283,9 @@ void ShowVideoClip(int start)
 	cv::namedWindow( "Video", 0 );
 	cv::setMouseCallback( "Video", OnMouseVideo, 0 );
 	
+	if(start -30 > 0) start -= 30;
+	if(end + 30 < m_DataCount)  end += 30;
+	
 	int frameNumber = 0;
 	g_bStop = g_bPause = false;
 	wxBeginBusyCursor();
@@ -310,6 +295,13 @@ void ShowVideoClip(int start)
 		if (img_input.empty()) break;
 	}
 	wxEndBusyCursor();
+	
+	mpWindow *pPlotWin = GetPanelPlot()->GetPlotWin();
+	mpMovableObject* pLine = GetPanelPlot()->GetLineObjPtr();
+//	wxCoord xp = pPlotWin->x2p(start);
+	pLine->SetVisible(true);
+	pLine->SetCoordinateBase(500, 100);
+    pPlotWin->UpdateAll();
 	
 	do{
 		if(g_bPause)  {
@@ -332,6 +324,7 @@ void ShowVideoClip(int start)
 		statusBar->SetStatusText(str, 3);
 		
 		frameNumber++;
+		if(frameNumber > end)  break;
 		if(cv::waitKey(waitTime) >= 0) break;
 		
 	}while(1);			
@@ -349,17 +342,62 @@ void MainFrame::OnVideoStop(wxCommandEvent& event)
 void MainFrame::OnScrollbarTimer(wxTimerEvent& event)
 {
 	mpWindow *pPlotWin = GetPanelPlot()->GetPlotWin();
-//	int leftMar = pPlotWin->GetMarginLeft();
-//	float xscale = pPlotWin->GetXscl();
-	float x = pPlotWin->GetXpos();
 	
-//	myMsgOutput( "OnScrollbarTimer:  %f, scale %f %f , %d\n", x, xscale, leftMar/xscale, leftMar);
-	checkLabel(x + m_LeftWidth);
-	x += 200;
+	static int lick_start = -1;
+	static int lick_end = -1;
+	float x = pPlotWin->GetXpos();
+	int start = x + m_LeftWidth + m_CenterX;
+	int lickFrame = -1;
+	if(lick_start ==-1 && lick_end ==-1)
+		lickFrame = checkLabel(start, lick_start, lick_end);
+	else if(start <lick_start || start> lick_end)
+			lickFrame = checkLabel(start, lick_start, lick_end);
+		
+	if(lickFrame > 0) {
+		myMsgOutput("x %.1f, start %d, lickFrame %d, [%d, %d]\n", x, start, lickFrame, lick_start, lick_end);
+		m_timerScroll->Stop();
+		PlayVideoClip(lick_start, lick_end);
+		wxBell();
+//		PlayVideoClip(lick_start, lick_end);
+//		wxBell();
+		x = lick_end - m_LeftWidth - m_CenterX +2;
+	}else
+		x += 200;
 	if(x < m_DataCount-2000 )
 		pPlotWin->SetPosX(x);
 	else
 		m_timerScroll->Stop();
+}
+
+int MainFrame::checkLabel(int start, int& lick_start, int& lick_end )
+{
+	bool bFound = false;
+	int i, end;
+	lick_start = lick_end = -1;
+
+	end = start + 200;
+	for(i=start; i<end; i++)
+		if(m_vPredict[i] == PREDICT_HIGH) {
+			lick_start = i;
+			bFound = true;
+			break;
+		}
+	
+	if(bFound) {
+		for(i=lick_start; i<m_DataCount; i++)
+			if(m_vPredict[i] == PREDICT_LOW) {
+				lick_end = i-1;
+				break;
+			}
+		if(i==m_DataCount)
+			lick_end = m_DataCount -1;
+			
+	}
+	
+	int ret = -1;
+	if(bFound) ret = lick_start;
+	
+	return ret;
 }
 void MainFrame::OnDataAutoScrolling(wxCommandEvent& event)
 {
@@ -377,4 +415,11 @@ void MainFrame::OnScrollNext(wxCommandEvent& event)
 }
 void MainFrame::OnScrollPrevious(wxCommandEvent& event)
 {
+}
+
+void MainFrame::OnToggleShowCoord(wxCommandEvent& event)
+{
+	bool b = m_toggleButtonCoord->GetValue();
+	GetPanelPlot()->SetInfoCoordsVisible(b);
+	
 }

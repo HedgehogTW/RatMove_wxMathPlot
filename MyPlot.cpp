@@ -87,11 +87,11 @@ void MyPlot::plotSignal(vector<float> &vecFD, vector<float>& vecSmoothFD,
 	std::vector<float> car_xs(2), car_ys(2);
 	car_xs[0]=1500;  car_ys[0]=-100;
     car_xs[1]=1500;   car_ys[1]=2000;
-    mpPolygon *lCar = new mpPolygon( wxT("car"));
+    m_pLine = new mpPolygon( wxT("line"));
 
-    lCar->SetPen( wxPen(*wxGREEN, 2, wxDOT_DASH) );
-    lCar->setPoints( car_xs,car_ys, true );
-	lCar->SetDrawOutsideMargins(false);    
+    m_pLine->SetPen( wxPen(*wxGREEN, 2, wxDOT_DASH) );
+    m_pLine->setPoints( car_xs,car_ys, true );
+	m_pLine->SetDrawOutsideMargins(false);    
 	
 	m_plot->SetMargins(30, 30, 50, 60);
 
@@ -101,11 +101,12 @@ void MyPlot::plotSignal(vector<float> &vecFD, vector<float>& vecSmoothFD,
     m_plot->AddLayer( vectorLayersmoothFD );
 	m_plot->AddLayer( vectorLayerPredict );
 	m_plot->AddLayer( vectorLayerDesired );	
-    m_plot->AddLayer( lCar );	
+    m_plot->AddLayer( m_pLine );	
+//	m_pLine->SetVisible(false);
 	
 	wxBrush hatch(wxColour(200,200,200), wxSOLID);
-    m_plot->AddLayer( nfo = new mpInfoCoords(wxRect(400,20,10,40), wxTRANSPARENT_BRUSH)); //&hatch));
-    nfo->SetVisible(false);
+    m_plot->AddLayer( m_nfo = new mpInfoCoords(wxRect(700,20,10,40), wxTRANSPARENT_BRUSH)); //&hatch));
+    m_nfo->SetVisible(false);
     wxBrush hatch2(wxColour(163,208,212), wxSOLID);
     mpInfoLegend* leg;
     m_plot->AddLayer( leg = new mpInfoLegend(wxRect(200,20,40,40), wxTRANSPARENT_BRUSH)); //&hatch2));
