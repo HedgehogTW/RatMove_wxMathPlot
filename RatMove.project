@@ -19,6 +19,8 @@
   <VirtualDirectory Name="resources">
     <File Name="wxcrafter.wxcp"/>
     <File Name="win_resources.rc"/>
+    <File Name="DlgPlayVideoClip.h"/>
+    <File Name="DlgPlayVideoClip.cpp"/>
   </VirtualDirectory>
   <Settings Type="Executable">
     <GlobalSettings>
@@ -120,4 +122,14 @@
       </Completion>
     </Configuration>
   </Settings>
+  <VirtualDirectory Name="wxcrafter">
+    <File Name="play_video_clip.wxcp"/>
+    <VirtualDirectory Name="resources">
+      <File Name="play_video_clip_ratmove_wxmathplot_bitmaps.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="base">
+      <File Name="play_video_clip.h"/>
+      <File Name="play_video_clip.cpp"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
 </CodeLite_Project>
