@@ -31,7 +31,7 @@
 #define MIN_GAP  20
 
 #define PAUSE_TIME 5000
-#define WAIT_TIME  30
+#define WAIT_TIME  10
 
 bool 		g_bStop;
 bool 		g_bPause;
@@ -300,7 +300,7 @@ void MainFrame::PlayVideoClip(int start, int end)
 	mpMovableObject* pLine = GetPanelPlot()->GetLineObjPtr();
 //	wxCoord xp = pPlotWin->x2p(start);
 	pLine->SetVisible(true);
-	pLine->SetCoordinateBase(500, 100);
+	pLine->SetCoordinateBase(frameNumber, 100);
     pPlotWin->UpdateAll();
 	
 	do{
@@ -323,9 +323,11 @@ void MainFrame::PlayVideoClip(int start, int end)
 		wxStatusBar* statusBar = MainFrame::m_pThis->GetStatusBar() ;
 		statusBar->SetStatusText(str, 3);
 		
+		pLine->SetCoordinateBase(frameNumber, -100);
+		pPlotWin->UpdateAll();
 		frameNumber++;
 		if(frameNumber > end)  break;
-		if(cv::waitKey(waitTime) >= 0) break;
+		if(cv::waitKey(1) >= 0) break;
 		
 	}while(1);			
 }

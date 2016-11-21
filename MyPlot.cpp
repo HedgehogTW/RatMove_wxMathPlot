@@ -85,9 +85,9 @@ void MyPlot::plotSignal(vector<float> &vecFD, vector<float>& vecSmoothFD,
 	
 	
 	std::vector<float> car_xs(2), car_ys(2);
-	car_xs[0]=1500;  car_ys[0]=-100;
-    car_xs[1]=1500;   car_ys[1]=2000;
-    m_pLine = new mpPolygon( wxT("line"));
+	car_xs[0]=0;  car_ys[0]=-100;
+    car_xs[1]=0;   car_ys[1]=2000;
+    m_pLine = new mpPolygon( wxT(""));
 
     m_pLine->SetPen( wxPen(*wxGREEN, 2, wxDOT_DASH) );
     m_pLine->setPoints( car_xs,car_ys, true );
