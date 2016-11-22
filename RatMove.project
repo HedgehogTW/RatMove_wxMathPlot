@@ -11,6 +11,12 @@
     <File Name="mathplot.h"/>
     <File Name="MyPlot.cpp"/>
     <File Name="MyPlot.h"/>
+    <File Name="DlgPlayVideoClip.cpp"/>
+    <File Name="DlgPlayVideoClip.h"/>
+    <File Name="MyPlotSegment.cpp"/>
+    <File Name="MyPlotSegment.h"/>
+    <File Name="MyVideoPanel.h"/>
+    <File Name="MyVideoPanel.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="MainFrame.h"/>
@@ -19,8 +25,6 @@
   <VirtualDirectory Name="resources">
     <File Name="wxcrafter.wxcp"/>
     <File Name="win_resources.rc"/>
-    <File Name="DlgPlayVideoClip.h"/>
-    <File Name="DlgPlayVideoClip.cpp"/>
   </VirtualDirectory>
   <Settings Type="Executable">
     <GlobalSettings>

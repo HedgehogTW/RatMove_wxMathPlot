@@ -15,6 +15,8 @@
 #include <wx/artprov.h>
 #include <wx/sizer.h>
 #include <wx/panel.h>
+#include "MyVideoPanel.h"
+#include "MyPlotSegment.h"
 #include <wx/button.h>
 #if wxVERSION_NUMBER >= 2900
 #include <wx/persist.h>
@@ -36,27 +38,30 @@
 class DlgPlayVideoClipBase : public wxDialog
 {
 protected:
-    wxPanel* m_panel4;
-    wxPanel* m_panel18;
+    MyVideoPanel* m_panelVideo;
+    MyPlotSegment* m_panelProfile;
     wxPanel* m_panel6;
-    wxButton* m_button10;
-    wxButton* m_button12;
-    wxButton* m_button14;
-    wxButton* m_button16;
-    wxButton* m_button20;
+    wxButton* m_buttonPlay;
+    wxButton* m_buttonPause;
+    wxButton* m_buttonAccept;
+    wxButton* m_buttonPartialAccept;
+    wxButton* m_buttonReject;
 
 protected:
+    virtual void OnPaint(wxPaintEvent& event) { event.Skip(); }
+    virtual void OnPlay(wxCommandEvent& event) { event.Skip(); }
+    virtual void OnPause(wxCommandEvent& event) { event.Skip(); }
 
 public:
-    wxPanel* GetPanel4() { return m_panel4; }
-    wxPanel* GetPanel18() { return m_panel18; }
-    wxButton* GetButton10() { return m_button10; }
-    wxButton* GetButton12() { return m_button12; }
-    wxButton* GetButton14() { return m_button14; }
-    wxButton* GetButton16() { return m_button16; }
-    wxButton* GetButton20() { return m_button20; }
+    MyVideoPanel* GetPanelVideo() { return m_panelVideo; }
+    MyPlotSegment* GetPanelProfile() { return m_panelProfile; }
+    wxButton* GetButtonPlay() { return m_buttonPlay; }
+    wxButton* GetButtonPause() { return m_buttonPause; }
+    wxButton* GetButtonAccept() { return m_buttonAccept; }
+    wxButton* GetButtonPartialAccept() { return m_buttonPartialAccept; }
+    wxButton* GetButtonReject() { return m_buttonReject; }
     wxPanel* GetPanel6() { return m_panel6; }
-    DlgPlayVideoClipBase(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Play video clip"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(500,400), long style = wxDEFAULT_DIALOG_STYLE);
+    DlgPlayVideoClipBase(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Play video clip"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(500,600), long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER);
     virtual ~DlgPlayVideoClipBase();
 };
 

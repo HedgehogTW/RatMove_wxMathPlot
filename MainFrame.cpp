@@ -20,6 +20,7 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
+
 #define DESIRED_LOW 800
 #define DESIRED_HIGH 1000
 
@@ -71,9 +72,11 @@ MainFrame::MainFrame(wxWindow* parent)
 	
 	m_DataCount = -1;
 	m_LeftWidth = 0;
-	ShowSignal();
 	
-
+	m_pDlgVideo = new DlgPlayVideoClip(this);
+	LoadSignal();
+	
+	
 }
 
 MainFrame::~MainFrame()
@@ -102,7 +105,7 @@ void MainFrame::OnAbout(wxCommandEvent& event)
 //	ShowSignal();
 
 //}
-void MainFrame::ShowSignal()
+void MainFrame::LoadSignal()
 {
 	string 	strProfileName  = m_DataPath + "_labelData.csv";
 	string 	strPredictName  = m_DataPath + "pred_w10o60.svm.csv";
@@ -120,6 +123,8 @@ void MainFrame::ShowSignal()
 	myMsgOutput("XScreen %d, Xscale %f, %f\n", XScreen, xscale, XScreen/ xscale);
 	myMsgOutput("leftMar %d, Xscale %f, %f, centerX %d\n", leftMar, xscale, leftMar/ xscale, m_CenterX);
 	
+	MyPlotSegment* pPlotSegment = m_pDlgVideo->getPanelProfile();
+	pPlotSegment->setSignalSegment(m_vSignalFD, m_vSmoothFD, m_vDesired, m_vPredict);	
 	
 }
 
@@ -265,81 +270,92 @@ static void OnMouseVideo( int event, int x, int y, int, void* )
 	MainFrame::myMsgOutput( "OnMouseVideo: Stop\n");
 }
 
-void MainFrame::PlayVideoClip(int start, int end)
-{
-	cv::VideoCapture vidCap;
-	int waitTime = WAIT_TIME;
-	
-	cv::Mat img_input;
-	string 	strVideoName  = MainFrame::m_pThis->m_DataPath + "1218(4).AVI";
-	vidCap.open(strVideoName);
-	if(vidCap.isOpened()==false) {
-		MainFrame::myMsgOutput( "Load ... " + strVideoName + " ERROR\n");
-		return;
-	}
-
-	double fps = vidCap.get(CV_CAP_PROP_FPS);
-	MainFrame::myMsgOutput("ShowVideoClip from frame %d \n", start);	
-	cv::namedWindow( "Video", 0 );
-	cv::setMouseCallback( "Video", OnMouseVideo, 0 );
-	
-	if(start -30 > 0) start -= 30;
-	if(end + 30 < m_DataCount)  end += 30;
-	
-	int frameNumber = 0;
-	g_bStop = g_bPause = false;
-	wxBeginBusyCursor();
-	while(frameNumber < start){
-		frameNumber++;	
-		vidCap >> img_input;
-		if (img_input.empty()) break;
-	}
-	wxEndBusyCursor();
-	
-	mpWindow *pPlotWin = GetPanelPlot()->GetPlotWin();
-	mpMovableObject* pLine = GetPanelPlot()->GetLineObjPtr();
-//	wxCoord xp = pPlotWin->x2p(start);
-	pLine->SetVisible(true);
-	pLine->SetCoordinateBase(frameNumber, 100);
-    pPlotWin->UpdateAll();
-	
-	do{
-		if(g_bPause)  {
-			g_bPause = false;
-			cv::waitKey(PAUSE_TIME);
-		}		
-		if(g_bStop)  break;
-		
-		vidCap >> img_input;
-		if (img_input.empty()) break;	
-		cv::imshow("Video", img_input);
-		
-		float sec = frameNumber /fps;
-		int mm = sec / 60;
-		int ss = sec - mm*60;
-		wxString str;
-		str.Printf("Frame No. %d, %02d:%02d", frameNumber, mm, ss);
-		
-		wxStatusBar* statusBar = MainFrame::m_pThis->GetStatusBar() ;
-		statusBar->SetStatusText(str, 3);
-		
-		pLine->SetCoordinateBase(frameNumber, -100);
-		pPlotWin->UpdateAll();
-		frameNumber++;
-		if(frameNumber > end)  break;
-		if(cv::waitKey(1) >= 0) break;
-		
-	}while(1);			
-}
+//void MainFrame::PlayVideoClip(int start, int end)
+//{
+//	cv::VideoCapture vidCap;
+//	int waitTime = WAIT_TIME;
+//	
+//	cv::Mat img_input;
+//	string 	strVideoName  = MainFrame::m_pThis->m_DataPath + "1218(4).AVI";
+//	vidCap.open(strVideoName);
+//	if(vidCap.isOpened()==false) {
+//		MainFrame::myMsgOutput( "Load ... " + strVideoName + " ERROR\n");
+//		return;
+//	}
+//
+//	double fps = vidCap.get(CV_CAP_PROP_FPS);
+//	MainFrame::myMsgOutput("ShowVideoClip from frame %d \n", start);	
+//	cv::namedWindow( "Video", 0 );
+//	cv::setMouseCallback( "Video", OnMouseVideo, 0 );
+//	
+//	if(start -30 > 0) start -= 30;
+//	if(end + 30 < m_DataCount)  end += 30;
+//	
+//	int frameNumber = 0;
+//	g_bStop = g_bPause = false;
+//	wxBeginBusyCursor();
+//	while(frameNumber < start){
+//		frameNumber++;	
+//		vidCap >> img_input;
+//		if (img_input.empty()) break;
+//	}
+//	wxEndBusyCursor();
+//	
+//	mpWindow *pPlotWin = GetPanelPlot()->GetPlotWin();
+//	mpMovableObject* pLine = GetPanelPlot()->GetLineObjPtr();
+////	wxCoord xp = pPlotWin->x2p(start);
+//	pLine->SetVisible(true);
+//	pLine->SetCoordinateBase(frameNumber, 100);
+//    pPlotWin->UpdateAll();
+//	
+//	if(m_pDlgVideo!=NULL) {
+//		m_pDlgVideo->Show();
+//		MyPlotSegment* pPlotSegment = m_pDlgVideo->getPanelProfile();
+//		pPlotSegment->showProfileSegment(start, end);
+//	}	
+//	/*
+//	do{
+//		if(g_bPause)  {
+//			g_bPause = false;
+//			cv::waitKey(PAUSE_TIME);
+//		}		
+//		if(g_bStop)  break;
+//		
+//	
+//		
+//		vidCap >> img_input;
+//		if (img_input.empty()) break;	
+//		cv::imshow("Video", img_input);
+//		
+//		float sec = frameNumber /fps;
+//		int mm = sec / 60;
+//		int ss = sec - mm*60;
+//		wxString str;
+//		str.Printf("Frame No. %d, %02d:%02d", frameNumber, mm, ss);
+//		
+//		wxStatusBar* statusBar = MainFrame::m_pThis->GetStatusBar() ;
+//		statusBar->SetStatusText(str, 3);
+//		
+//		pLine->SetCoordinateBase(frameNumber, -100);
+//		pPlotWin->UpdateAll();
+//		frameNumber++;
+//		if(frameNumber > end)  break;
+//		if(cv::waitKey(1) >= 0) break;
+//		
+//	}while(1);		
+//*/	
+//}
 void MainFrame::OnVideoPause(wxCommandEvent& event)
 {
 	g_bPause = true;
 	myMsgOutput( "OnVideoPause: wait %d milliseconds.\n", PAUSE_TIME);	
+
 }
 void MainFrame::OnVideoStop(wxCommandEvent& event)
 {
 	g_bStop = true;
 	myMsgOutput( "OnVideoStop\n");	
+		
 }
 void MainFrame::OnScrollbarTimer(wxTimerEvent& event)
 {
@@ -358,7 +374,12 @@ void MainFrame::OnScrollbarTimer(wxTimerEvent& event)
 	if(lickFrame > 0) {
 		myMsgOutput("x %.1f, start %d, lickFrame %d, [%d, %d]\n", x, start, lickFrame, lick_start, lick_end);
 		m_timerScroll->Stop();
-		PlayVideoClip(lick_start, lick_end);
+		if(m_pDlgVideo) {
+			m_pDlgVideo->Show();
+			m_pDlgVideo->PlayVideoClip(lick_start, lick_end);
+MyPlotSegment* pPlotSegment = m_pDlgVideo->getPanelProfile();
+		pPlotSegment->showProfileSegment(lick_start, lick_end);			
+		}
 		wxBell();
 //		PlayVideoClip(lick_start, lick_end);
 //		wxBell();
@@ -410,6 +431,10 @@ void MainFrame::OnScrollPause(wxCommandEvent& event)
 {
 	myMsgOutput( "OnScrollPause: \n");
 	m_timerScroll->Stop();
+
+		MyPlotSegment* pPlotSegment = m_pDlgVideo->getPanelProfile();
+		pPlotSegment->showProfileSegment(6000, 7000);	
+			m_pDlgVideo->Show();
 }
 
 void MainFrame::OnScrollNext(wxCommandEvent& event)

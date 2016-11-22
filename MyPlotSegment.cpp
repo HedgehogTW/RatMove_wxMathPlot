@@ -1,29 +1,46 @@
-#include "MyPlot.h"
+#include "MyPlotSegment.h"
 #include "MainFrame.h"
 #include <wx/log.h>
 #include <wx/dcclient.h>
 
-int lickRangeLow[GTNUM] = {6026, 15392, 16345, 26793, 28358, 29164, 33445, 34680, 35113, 44345, 46753};
-int lickRangeUp[GTNUM]  = {6084, 15404, 16362, 27048, 28604, 29360, 34164, 35098, 35449, 44414, 46898};
 
-MyPlot::MyPlot(wxWindow *parent, wxWindowID id,	const wxPoint &pos,	const wxSize &size,	long style )
+MyPlotSegment::MyPlotSegment(wxWindow *parent, wxWindowID id,	const wxPoint &pos,	const wxSize &size,	long style )
 		:wxPanel(parent, id)
 {
 	m_plot = NULL;
+	m_szSignal = 0;
 }
 
-MyPlot::~MyPlot()
+MyPlotSegment::~MyPlotSegment()
 {
 }
 
-bool MyPlot::HasTransparentBackground()
+bool MyPlotSegment::HasTransparentBackground()
 {
 }
-bool MyPlot::IsCanvasWindow() const
+bool MyPlotSegment::IsCanvasWindow() const
 {
 }
 
-void MyPlot::plotSignal(vector<float> &vecFD, vector<float>& vecSmoothFD, 
+void MyPlotSegment::showProfileSegment(int start, int end)
+{
+	if(m_plot == NULL)  return;
+
+	int from, to;
+	if(start -500 > 0) 
+		from = start -500;
+	else
+		from = 0;
+		
+	if(end+ 500 < m_szSignal) 
+		to = end+ 500;
+	else
+		to = m_szSignal;
+		
+	m_plot->Fit(from, to, 0, 2000);		
+	Refresh();
+}
+void MyPlotSegment::setSignalSegment(vector<float> &vecFD, vector<float>& vecSmoothFD, 
 		vector<float>& vecDesired, vector<float>& vecPredict)
 {
 	if(m_plot != NULL) {
@@ -31,19 +48,19 @@ void MyPlot::plotSignal(vector<float> &vecFD, vector<float>& vecSmoothFD,
 		delete m_plot;
 		m_plot = NULL;
 	}
-	
 	mpFXYVector* vectorLayerFD = new mpFXYVector(_("FD"));
 	mpFXYVector* vectorLayersmoothFD = new mpFXYVector(_("smoothFD"));
 	mpFXYVector* vectorLayerDesired = new mpFXYVector(_("Desired"));
 	mpFXYVector* vectorLayerPredict = new mpFXYVector(_("Predict"));
 	
 	// Create two vectors for x,y and fill them with data
-
+	
 	int szSignal = vecFD.size();
 	std::vector<float> vectorx(szSignal);
 	for (unsigned int p = 0; p < szSignal; p++) {
 		vectorx[p] = p;
 	}	
+	m_szSignal = szSignal;
 	
 	// FD
 	vectorLayerFD->SetData(vectorx, vecFD);
@@ -111,13 +128,13 @@ void MyPlot::plotSignal(vector<float> &vecFD, vector<float>& vecSmoothFD,
     m_plot->AddLayer( m_pLine );	
 //	m_pLine->SetVisible(false);
 	
-	wxBrush hatch(wxColour(200,200,200), wxSOLID);
-    m_plot->AddLayer( m_nfo = new mpInfoCoords(wxRect(700,20,10,40), wxTRANSPARENT_BRUSH)); //&hatch));
-    m_nfo->SetVisible(false);
-    wxBrush hatch2(wxColour(163,208,212), wxSOLID);
-    mpInfoLegend* leg;
-    m_plot->AddLayer( leg = new mpInfoLegend(wxRect(200,20,40,40), wxTRANSPARENT_BRUSH)); //&hatch2));
-    leg->SetVisible(false);
+//	wxBrush hatch(wxColour(200,200,200), wxSOLID);
+//    m_plot->AddLayer( m_nfo = new mpInfoCoords(wxRect(700,20,10,40), wxTRANSPARENT_BRUSH)); //&hatch));
+//    m_nfo->SetVisible(false);
+//    wxBrush hatch2(wxColour(163,208,212), wxSOLID);
+//    mpInfoLegend* leg;
+//    m_plot->AddLayer( leg = new mpInfoLegend(wxRect(200,20,40,40), wxTRANSPARENT_BRUSH)); //&hatch2));
+//    leg->SetVisible(false);
     
     // m_plot->EnableCoordTooltip(true);
     // set a nice pen for the lissajoux
@@ -134,11 +151,10 @@ void MyPlot::plotSignal(vector<float> &vecFD, vector<float>& vecSmoothFD,
 
     SetAutoLayout( TRUE );
     SetSizer( topsizer );
- //   axesPos[0] = 0;
- //   axesPos[1] = 0;
- //   ticks = true;
+ 
     m_plot->EnablefloatBuffer(true);
-    m_plot->SetMPScrollbars(true);
-    m_plot->Fit(0, 3000, 0, 2500);	
+    m_plot->SetMPScrollbars(false);
+
+    m_plot->Fit(500, 1500, 0, 2000);	
 
 }

@@ -26,13 +26,18 @@ DlgPlayVideoClipBase::DlgPlayVideoClipBase(wxWindow* parent, wxWindowID id, cons
     wxBoxSizer* boxSizer2 = new wxBoxSizer(wxVERTICAL);
     this->SetSizer(boxSizer2);
     
-    m_panel4 = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTAB_TRAVERSAL);
+    m_panelVideo = new MyVideoPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTAB_TRAVERSAL);
     
-    boxSizer2->Add(m_panel4, 2, wxALL|wxEXPAND, WXC_FROM_DIP(5));
+    boxSizer2->Add(m_panelVideo, 2, wxALL|wxEXPAND, WXC_FROM_DIP(5));
+    m_panelVideo->SetMinSize(wxSize(320,256));
     
-    m_panel18 = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTAB_TRAVERSAL);
+    m_panelProfile = new MyPlotSegment(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTAB_TRAVERSAL);
     
-    boxSizer2->Add(m_panel18, 1, wxALL|wxEXPAND, WXC_FROM_DIP(5));
+    boxSizer2->Add(m_panelProfile, 1, wxALL|wxEXPAND, WXC_FROM_DIP(5));
+    
+    wxBoxSizer* topsizer = new wxBoxSizer(wxVERTICAL);
+    m_panelProfile->SetSizer(topsizer);
+    m_panelProfile->SetMinSize(wxSize(500,200));
     
     m_panel6 = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTAB_TRAVERSAL);
     
@@ -41,48 +46,49 @@ DlgPlayVideoClipBase::DlgPlayVideoClipBase(wxWindow* parent, wxWindowID id, cons
     wxBoxSizer* boxSizer8 = new wxBoxSizer(wxHORIZONTAL);
     m_panel6->SetSizer(boxSizer8);
     
-    m_button10 = new wxButton(m_panel6, wxID_ANY, _("Play"), wxDefaultPosition, wxDLG_UNIT(m_panel6, wxSize(-1,-1)), 0);
+    m_buttonPlay = new wxButton(m_panel6, wxID_ANY, _("Play"), wxDefaultPosition, wxDLG_UNIT(m_panel6, wxSize(-1,-1)), 0);
     #if wxVERSION_NUMBER >= 2904
-    m_button10->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("play")), wxTOP);
-    m_button10->SetBitmapMargins(4,4);
+    m_buttonPlay->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("play")), wxTOP);
+    m_buttonPlay->SetBitmapMargins(4,4);
     #endif
     
-    boxSizer8->Add(m_button10, 0, wxALL, WXC_FROM_DIP(5));
+    boxSizer8->Add(m_buttonPlay, 0, wxALL, WXC_FROM_DIP(5));
     
-    m_button12 = new wxButton(m_panel6, wxID_ANY, _("Pause"), wxDefaultPosition, wxDLG_UNIT(m_panel6, wxSize(-1,-1)), 0);
+    m_buttonPause = new wxButton(m_panel6, wxID_ANY, _("Pause"), wxDefaultPosition, wxDLG_UNIT(m_panel6, wxSize(-1,-1)), 0);
     #if wxVERSION_NUMBER >= 2904
-    m_button12->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("pause")), wxTOP);
-    m_button12->SetBitmapMargins(2,2);
+    m_buttonPause->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("pause")), wxTOP);
+    m_buttonPause->SetBitmapMargins(2,2);
     #endif
     
-    boxSizer8->Add(m_button12, 0, wxALL, WXC_FROM_DIP(5));
+    boxSizer8->Add(m_buttonPause, 0, wxALL, WXC_FROM_DIP(5));
     
-    m_button14 = new wxButton(m_panel6, wxID_ANY, _("My Button"), wxDefaultPosition, wxDLG_UNIT(m_panel6, wxSize(-1,-1)), 0);
+    m_buttonAccept = new wxButton(m_panel6, wxID_ANY, _("Accept"), wxDefaultPosition, wxDLG_UNIT(m_panel6, wxSize(-1,-1)), 0);
     #if wxVERSION_NUMBER >= 2904
-    m_button14->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("like")), wxTOP);
-    m_button14->SetBitmapMargins(2,2);
+    m_buttonAccept->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("like")), wxTOP);
+    m_buttonAccept->SetBitmapMargins(2,2);
     #endif
     
-    boxSizer8->Add(m_button14, 0, wxALL, WXC_FROM_DIP(5));
+    boxSizer8->Add(m_buttonAccept, 0, wxALL, WXC_FROM_DIP(5));
     
-    m_button16 = new wxButton(m_panel6, wxID_ANY, _("My Button"), wxDefaultPosition, wxDLG_UNIT(m_panel6, wxSize(-1,-1)), 0);
+    m_buttonPartialAccept = new wxButton(m_panel6, wxID_ANY, _("Partial Accept"), wxDefaultPosition, wxDLG_UNIT(m_panel6, wxSize(-1,-1)), 0);
     #if wxVERSION_NUMBER >= 2904
-    m_button16->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("justice")), wxTOP);
-    m_button16->SetBitmapMargins(2,2);
+    m_buttonPartialAccept->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("justice")), wxTOP);
+    m_buttonPartialAccept->SetBitmapMargins(2,2);
     #endif
     
-    boxSizer8->Add(m_button16, 0, wxALL, WXC_FROM_DIP(5));
+    boxSizer8->Add(m_buttonPartialAccept, 0, wxALL, WXC_FROM_DIP(5));
     
-    m_button20 = new wxButton(m_panel6, wxID_ANY, _("My Button"), wxDefaultPosition, wxDLG_UNIT(m_panel6, wxSize(-1,-1)), 0);
+    m_buttonReject = new wxButton(m_panel6, wxID_ANY, _("Reject"), wxDefaultPosition, wxDLG_UNIT(m_panel6, wxSize(-1,-1)), 0);
     #if wxVERSION_NUMBER >= 2904
-    m_button20->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("dislike")), wxTOP);
-    m_button20->SetBitmapMargins(2,2);
+    m_buttonReject->SetBitmap(wxXmlResource::Get()->LoadBitmap(wxT("dislike")), wxTOP);
+    m_buttonReject->SetBitmapMargins(2,2);
     #endif
     
-    boxSizer8->Add(m_button20, 0, wxALL, WXC_FROM_DIP(5));
+    boxSizer8->Add(m_buttonReject, 0, wxALL, WXC_FROM_DIP(5));
     
     SetName(wxT("DlgPlayVideoClipBase"));
-    SetSize(500,400);
+    SetMinClientSize(wxSize(500,600));
+    SetSize(500,600);
     if (GetSizer()) {
          GetSizer()->Fit(this);
     }
@@ -98,8 +104,17 @@ DlgPlayVideoClipBase::DlgPlayVideoClipBase(wxWindow* parent, wxWindowID id, cons
         wxPersistenceManager::Get().Restore(this);
     }
 #endif
+    // Connect events
+    m_panelVideo->Connect(wxEVT_PAINT, wxPaintEventHandler(DlgPlayVideoClipBase::OnPaint), NULL, this);
+    m_buttonPlay->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DlgPlayVideoClipBase::OnPlay), NULL, this);
+    m_buttonPause->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DlgPlayVideoClipBase::OnPause), NULL, this);
+    
 }
 
 DlgPlayVideoClipBase::~DlgPlayVideoClipBase()
 {
+    m_panelVideo->Disconnect(wxEVT_PAINT, wxPaintEventHandler(DlgPlayVideoClipBase::OnPaint), NULL, this);
+    m_buttonPlay->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DlgPlayVideoClipBase::OnPlay), NULL, this);
+    m_buttonPause->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DlgPlayVideoClipBase::OnPause), NULL, this);
+    
 }

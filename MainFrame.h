@@ -7,7 +7,7 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-
+#include "DlgPlayVideoClip.h"
 
 using namespace std;
 class MainFrame : public MainFrameBaseClass
@@ -30,12 +30,12 @@ public:
     void OnExit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
 	
-	void ShowSignal();
+	void LoadSignal();
 	bool LoadProfileData(std::string& filename);
 	bool LoadPredictData(std::string& filename);
 	void Merge_Prune(std::vector<float> & vLabel, int low, int high);
 	int  checkLabel(int x, int& lick_start, int& lick_end);
-	void PlayVideoClip(int start, int end);
+//	void PlayVideoClip(int start, int end);
 	
 	static MainFrame *	m_pThis;
 	std::string 	m_DataPath;
@@ -48,6 +48,8 @@ public:
 	std::vector<float>  	m_vSmoothFD;	
 	std::vector<float>  	m_vDesired;
 	std::vector<float>  	m_vPredict;
+	
+	DlgPlayVideoClip*		m_pDlgVideo;
 
 protected:
     virtual void OnToggleShowCoord(wxCommandEvent& event);

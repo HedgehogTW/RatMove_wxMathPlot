@@ -1,7 +1,7 @@
 {
  "metadata": {
   "m_generatedFilesDir": ".",
-  "m_objCounter": 20,
+  "m_objCounter": 22,
   "m_includeFiles": [],
   "m_bitmapFunction": "wxC4D83InitBitmapResources",
   "m_bitmapsFile": "play_video_clip_ratmove_wxmathplot_bitmaps.cpp",
@@ -19,16 +19,16 @@
    "border": 5,
    "gbSpan": "1,1",
    "gbPosition": "0,0",
-   "m_styles": ["wxDEFAULT_DIALOG_STYLE"],
+   "m_styles": ["wxDEFAULT_DIALOG_STYLE", "wxRESIZE_BORDER"],
    "m_sizerFlags": ["wxALL", "wxLEFT", "wxRIGHT", "wxTOP", "wxBOTTOM"],
    "m_properties": [{
      "type": "string",
      "m_label": "Size:",
-     "m_value": "500,400"
+     "m_value": "500,600"
     }, {
      "type": "string",
      "m_label": "Minimum Size:",
-     "m_value": "-1,-1"
+     "m_value": "500,600"
     }, {
      "type": "string",
      "m_label": "Name:",
@@ -170,11 +170,11 @@
         }, {
          "type": "string",
          "m_label": "Minimum Size:",
-         "m_value": "-1,-1"
+         "m_value": "320, 256"
         }, {
          "type": "string",
          "m_label": "Name:",
-         "m_value": "m_panel4"
+         "m_value": "m_panelVideo"
         }, {
          "type": "multi-string",
          "m_label": "Tooltip:",
@@ -206,17 +206,24 @@
         }, {
          "type": "string",
          "m_label": "Class Name:",
-         "m_value": ""
+         "m_value": "MyVideoPanel"
         }, {
          "type": "string",
          "m_label": "Include File:",
-         "m_value": ""
+         "m_value": "MyVideoPanel.h"
         }, {
          "type": "string",
          "m_label": "Style:",
          "m_value": ""
         }],
-       "m_events": [],
+       "m_events": [{
+         "m_eventName": "wxEVT_PAINT",
+         "m_eventClass": "wxPaintEvent",
+         "m_eventHandler": "wxPaintEventHandler",
+         "m_functionNameAndSignature": "OnPaint(wxPaintEvent& event)",
+         "m_description": "Process a wxEVT_PAINT event",
+         "m_noBody": false
+        }],
        "m_children": []
       }, {
        "m_type": 4408,
@@ -237,11 +244,11 @@
         }, {
          "type": "string",
          "m_label": "Minimum Size:",
-         "m_value": "-1,-1"
+         "m_value": "500,200"
         }, {
          "type": "string",
          "m_label": "Name:",
-         "m_value": "m_panel18"
+         "m_value": "m_panelProfile"
         }, {
          "type": "multi-string",
          "m_label": "Tooltip:",
@@ -273,18 +280,46 @@
         }, {
          "type": "string",
          "m_label": "Class Name:",
-         "m_value": ""
+         "m_value": "MyPlotSegment"
         }, {
          "type": "string",
          "m_label": "Include File:",
-         "m_value": ""
+         "m_value": "MyPlotSegment.h"
         }, {
          "type": "string",
          "m_label": "Style:",
          "m_value": ""
         }],
        "m_events": [],
-       "m_children": []
+       "m_children": [{
+         "m_type": 4401,
+         "proportion": 1,
+         "border": 5,
+         "gbSpan": "1,1",
+         "gbPosition": "0,0",
+         "m_styles": [],
+         "m_sizerFlags": ["wxALL", "wxLEFT", "wxRIGHT", "wxTOP", "wxBOTTOM", "wxEXPAND"],
+         "m_properties": [{
+           "type": "string",
+           "m_label": "Minimum Size:",
+           "m_value": "-1,-1"
+          }, {
+           "type": "string",
+           "m_label": "Name:",
+           "m_value": "topsizer"
+          }, {
+           "type": "string",
+           "m_label": "Style:",
+           "m_value": ""
+          }, {
+           "type": "choice",
+           "m_label": "Orientation:",
+           "m_selection": 0,
+           "m_options": ["wxVERTICAL", "wxHORIZONTAL"]
+          }],
+         "m_events": [],
+         "m_children": []
+        }]
       }, {
        "m_type": 4408,
        "proportion": 0,
@@ -401,7 +436,7 @@
             }, {
              "type": "string",
              "m_label": "Name:",
-             "m_value": "m_button10"
+             "m_value": "m_buttonPlay"
             }, {
              "type": "multi-string",
              "m_label": "Tooltip:",
@@ -464,7 +499,14 @@
              "m_label": "Margins:",
              "m_value": "4,4"
             }],
-           "m_events": [],
+           "m_events": [{
+             "m_eventName": "wxEVT_COMMAND_BUTTON_CLICKED",
+             "m_eventClass": "wxCommandEvent",
+             "m_eventHandler": "wxCommandEventHandler",
+             "m_functionNameAndSignature": "OnPlay(wxCommandEvent& event)",
+             "m_description": "Process a wxEVT_COMMAND_BUTTON_CLICKED event, when the button is clicked.",
+             "m_noBody": false
+            }],
            "m_children": []
           }, {
            "m_type": 4400,
@@ -489,7 +531,7 @@
             }, {
              "type": "string",
              "m_label": "Name:",
-             "m_value": "m_button12"
+             "m_value": "m_buttonPause"
             }, {
              "type": "multi-string",
              "m_label": "Tooltip:",
@@ -552,7 +594,14 @@
              "m_label": "Margins:",
              "m_value": "2,2"
             }],
-           "m_events": [],
+           "m_events": [{
+             "m_eventName": "wxEVT_COMMAND_BUTTON_CLICKED",
+             "m_eventClass": "wxCommandEvent",
+             "m_eventHandler": "wxCommandEventHandler",
+             "m_functionNameAndSignature": "OnPause(wxCommandEvent& event)",
+             "m_description": "Process a wxEVT_COMMAND_BUTTON_CLICKED event, when the button is clicked.",
+             "m_noBody": false
+            }],
            "m_children": []
           }, {
            "m_type": 4400,
@@ -577,7 +626,7 @@
             }, {
              "type": "string",
              "m_label": "Name:",
-             "m_value": "m_button14"
+             "m_value": "m_buttonAccept"
             }, {
              "type": "multi-string",
              "m_label": "Tooltip:",
@@ -621,7 +670,7 @@
             }, {
              "type": "string",
              "m_label": "Label:",
-             "m_value": "My Button"
+             "m_value": "Accept"
             }, {
              "type": "bool",
              "m_label": "Default Button",
@@ -665,7 +714,7 @@
             }, {
              "type": "string",
              "m_label": "Name:",
-             "m_value": "m_button16"
+             "m_value": "m_buttonPartialAccept"
             }, {
              "type": "multi-string",
              "m_label": "Tooltip:",
@@ -709,7 +758,7 @@
             }, {
              "type": "string",
              "m_label": "Label:",
-             "m_value": "My Button"
+             "m_value": "Partial Accept"
             }, {
              "type": "bool",
              "m_label": "Default Button",
@@ -753,7 +802,7 @@
             }, {
              "type": "string",
              "m_label": "Name:",
-             "m_value": "m_button20"
+             "m_value": "m_buttonReject"
             }, {
              "type": "multi-string",
              "m_label": "Tooltip:",
@@ -797,7 +846,7 @@
             }, {
              "type": "string",
              "m_label": "Label:",
-             "m_value": "My Button"
+             "m_value": "Reject"
             }, {
              "type": "bool",
              "m_label": "Default Button",
