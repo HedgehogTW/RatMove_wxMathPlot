@@ -25,7 +25,7 @@ bool MyPlot::IsCanvasWindow() const
 void MyPlot::plotSignal(vector<float> &vecFD, vector<float>& vecSmoothFD, 
 		vector<float>& vecDesired, vector<float>& vecPredict)
 {
-	mpFXYVector* vectorLayerFD = new mpFXYVector(_("FD"));
+	mpFXYVector* vectorLayerFD = new mpFXYVector(_(""));
 	mpFXYVector* vectorLayersmoothFD = new mpFXYVector(_("smoothFD"));
 	mpFXYVector* vectorLayerDesired = new mpFXYVector(_("Desired"));
 	mpFXYVector* vectorLayerPredict = new mpFXYVector(_("Predict"));
@@ -72,7 +72,7 @@ void MyPlot::plotSignal(vector<float> &vecFD, vector<float>& vecSmoothFD,
 
     m_plot = new mpWindow( this, -1, wxPoint(0,0), wxSize(neww, newh), wxSIMPLE_BORDER );
     mpScaleX* xaxis = new mpScaleX(wxT("X"), mpALIGN_BOTTOM, true, mpX_NORMAL);
-    mpScaleY* yaxis = new mpScaleY(wxT("Y"), mpALIGN_LEFT, true);
+    mpScaleY* yaxis = new mpScaleY(wxT(""), mpALIGN_LEFT, true);
 	
 	wxFont graphFont(wxFontInfo(9).FaceName("Helvetica"));
     xaxis->SetFont(graphFont);

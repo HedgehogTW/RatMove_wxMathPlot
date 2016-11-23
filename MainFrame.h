@@ -50,6 +50,7 @@ public:
 	std::vector<float>  	m_vPredict;
 
 protected:
+    virtual void OnPaint(wxPaintEvent& event);
     virtual void OnToggleShowCoord(wxCommandEvent& event);
     virtual void OnScrollNext(wxCommandEvent& event);
     virtual void OnScrollPrevious(wxCommandEvent& event);

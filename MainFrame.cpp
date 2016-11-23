@@ -280,8 +280,8 @@ void MainFrame::PlayVideoClip(int start, int end)
 
 	double fps = vidCap.get(CV_CAP_PROP_FPS);
 	MainFrame::myMsgOutput("ShowVideoClip from frame %d \n", start);	
-	cv::namedWindow( "Video", 0 );
-	cv::setMouseCallback( "Video", OnMouseVideo, 0 );
+//	cv::namedWindow( "Video", 0 );
+//	cv::setMouseCallback( "Video", OnMouseVideo, 0 );
 	
 	if(start -30 > 0) start -= 30;
 	if(end + 30 < m_DataCount)  end += 30;
@@ -312,7 +312,8 @@ void MainFrame::PlayVideoClip(int start, int end)
 		
 		vidCap >> img_input;
 		if (img_input.empty()) break;	
-		cv::imshow("Video", img_input);
+		m_panelVideo->setImage(img_input);
+		//cv::imshow("Video", img_input);
 		
 		float sec = frameNumber /fps;
 		int mm = sec / 60;
@@ -323,12 +324,12 @@ void MainFrame::PlayVideoClip(int start, int end)
 		wxStatusBar* statusBar = MainFrame::m_pThis->GetStatusBar() ;
 		statusBar->SetStatusText(str, 3);
 		
-		pLine->SetCoordinateBase(frameNumber, -100);
-		pPlotWin->UpdateAll();
+//		pLine->SetCoordinateBase(frameNumber, -100);
+//		pPlotWin->UpdateAll();
 		frameNumber++;
 		if(frameNumber > end)  break;
-		if(cv::waitKey(1) >= 0) break;
-		
+		//if(cv::waitKey(1) >= 0) break;
+		wxMilliSleep(100);
 	}while(1);			
 }
 void MainFrame::OnVideoPause(wxCommandEvent& event)
@@ -421,7 +422,14 @@ void MainFrame::OnScrollPrevious(wxCommandEvent& event)
 
 void MainFrame::OnToggleShowCoord(wxCommandEvent& event)
 {
-	bool b = m_toggleButtonCoord->GetValue();
-	GetPanelPlot()->SetInfoCoordsVisible(b);
+//	bool b = m_toggleButtonCoord->GetValue();
+//	GetPanelPlot()->SetInfoCoordsVisible(b);
 	
+}
+void MainFrame::OnPaint(wxPaintEvent& event)
+{
+	m_panelVideo->OnPaint(event);
+//	wxPaintDC dc(this);
+//    if(m_pBitmap)	dc.DrawBitmap(*m_pBitmap, 0, 0, false);
+
 }

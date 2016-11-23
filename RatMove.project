@@ -11,6 +11,8 @@
     <File Name="mathplot.h"/>
     <File Name="MyPlot.cpp"/>
     <File Name="MyPlot.h"/>
+    <File Name="MyVideoPanel.cpp"/>
+    <File Name="MyVideoPanel.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="MainFrame.h"/>

@@ -74,25 +74,57 @@ MainFrameBaseClass::MainFrameBaseClass(wxWindow* parent, wxWindowID id, const wx
     wxBoxSizer* topsizer = new wxBoxSizer(wxVERTICAL);
     m_panelPlot->SetSizer(topsizer);
     
-    m_panelTools = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTAB_TRAVERSAL);
+    m_panelVideoView = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTAB_TRAVERSAL);
     
-    m_auimgr19->AddPane(m_panelTools, wxAuiPaneInfo().Caption(_("Tools")).Direction(wxAUI_DOCK_LEFT).Layer(0).Row(0).Position(0).BestSize(150,100).MinSize(150,100).MaxSize(150,100).CaptionVisible(true).MaximizeButton(false).CloseButton(false).MinimizeButton(false).PinButton(false));
+    m_auimgr19->AddPane(m_panelVideoView, wxAuiPaneInfo().Caption(_("Video Pane")).Direction(wxAUI_DOCK_BOTTOM).Layer(0).Row(0).Position(0).BestSize(50,100).MinSize(50,100).MaxSize(50,100).CaptionVisible(true).MaximizeButton(false).CloseButton(false).MinimizeButton(false).PinButton(false));
     
-    wxBoxSizer* boxSizer63 = new wxBoxSizer(wxVERTICAL);
-    m_panelTools->SetSizer(boxSizer63);
+    wxBoxSizer* boxSizer67 = new wxBoxSizer(wxVERTICAL);
+    m_panelVideoView->SetSizer(boxSizer67);
     
-    m_toggleButtonCoord = new wxToggleButton(m_panelTools, wxID_ANY, _("Show Coord."), wxDefaultPosition, wxDLG_UNIT(m_panelTools, wxSize(-1,-1)), 0);
-    m_toggleButtonCoord->SetValue(false);
+    m_panel69 = new wxPanel(m_panelVideoView, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(m_panelVideoView, wxSize(-1,-1)), wxTAB_TRAVERSAL);
     
-    boxSizer63->Add(m_toggleButtonCoord, 0, wxALL, WXC_FROM_DIP(5));
+    boxSizer67->Add(m_panel69, 1, wxALL|wxEXPAND, WXC_FROM_DIP(5));
     
-    m_panelPara = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTAB_TRAVERSAL);
+    wxBoxSizer* boxSizer79 = new wxBoxSizer(wxHORIZONTAL);
+    m_panel69->SetSizer(boxSizer79);
     
-    m_auimgr19->AddPane(m_panelPara, wxAuiPaneInfo().Caption(_("Parameter Setting")).Direction(wxAUI_DOCK_BOTTOM).Layer(0).Row(0).Position(0).BestSize(50,100).MinSize(50,100).MaxSize(50,100).CaptionVisible(true).MaximizeButton(false).CloseButton(false).MinimizeButton(false).PinButton(false));
+    m_panelVideo = new MyVideoPanel(m_panel69, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(m_panel69, wxSize(-1,-1)), wxTAB_TRAVERSAL);
+    
+    boxSizer79->Add(m_panelVideo, 1, wxALL|wxEXPAND, WXC_FROM_DIP(5));
+    
+    m_panel83 = new wxPanel(m_panel69, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(m_panel69, wxSize(-1,-1)), wxTAB_TRAVERSAL);
+    
+    boxSizer79->Add(m_panel83, 0, wxALL, WXC_FROM_DIP(5));
+    
+    wxBoxSizer* boxSizer85 = new wxBoxSizer(wxVERTICAL);
+    m_panel83->SetSizer(boxSizer85);
+    
+    m_button87 = new wxButton(m_panel83, wxID_ANY, _("My Button"), wxDefaultPosition, wxDLG_UNIT(m_panel83, wxSize(-1,-1)), 0);
+    
+    boxSizer85->Add(m_button87, 0, wxALL, WXC_FROM_DIP(5));
+    
+    m_button89 = new wxButton(m_panel83, wxID_ANY, _("My Button"), wxDefaultPosition, wxDLG_UNIT(m_panel83, wxSize(-1,-1)), 0);
+    
+    boxSizer85->Add(m_button89, 0, wxALL, WXC_FROM_DIP(5));
+    
+    m_panel71 = new wxPanel(m_panelVideoView, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(m_panelVideoView, wxSize(-1,-1)), wxTAB_TRAVERSAL);
+    
+    boxSizer67->Add(m_panel71, 0, wxALL|wxEXPAND, WXC_FROM_DIP(5));
+    
+    wxBoxSizer* boxSizer73 = new wxBoxSizer(wxHORIZONTAL);
+    m_panel71->SetSizer(boxSizer73);
+    
+    m_button75 = new wxButton(m_panel71, wxID_ANY, _("My Button"), wxDefaultPosition, wxDLG_UNIT(m_panel71, wxSize(-1,-1)), 0);
+    
+    boxSizer73->Add(m_button75, 0, wxALL, WXC_FROM_DIP(5));
+    
+    m_button77 = new wxButton(m_panel71, wxID_ANY, _("My Button"), wxDefaultPosition, wxDLG_UNIT(m_panel71, wxSize(-1,-1)), 0);
+    
+    boxSizer73->Add(m_button77, 0, wxALL, WXC_FROM_DIP(5));
     
     m_panelMsg = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTAB_TRAVERSAL);
     
-    m_auimgr19->AddPane(m_panelMsg, wxAuiPaneInfo().Name(wxT("MsgPane")).Caption(_("Message Pane")).Direction(wxAUI_DOCK_BOTTOM).Layer(0).Row(0).Position(1).BestSize(550,100).MinSize(550,100).MaxSize(550,100).CaptionVisible(true).MaximizeButton(false).CloseButton(false).MinimizeButton(false).PinButton(false));
+    m_auimgr19->AddPane(m_panelMsg, wxAuiPaneInfo().Name(wxT("MsgPane")).Caption(_("Message Pane")).Direction(wxAUI_DOCK_BOTTOM).Layer(0).Row(0).Position(1).BestSize(550,200).MinSize(550,200).MaxSize(550,200).CaptionVisible(true).MaximizeButton(false).CloseButton(false).MinimizeButton(false).PinButton(false));
     m_auimgr19->Update();
     
     wxBoxSizer* boxSizer29 = new wxBoxSizer(wxVERTICAL);
@@ -128,7 +160,7 @@ MainFrameBaseClass::MainFrameBaseClass(wxWindow* parent, wxWindowID id, const wx
     this->Connect(wxID_PAUSE, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollPause), NULL, this);
     this->Connect(wxID_REWIND, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollPrevious), NULL, this);
     this->Connect(wxID_FORWARD, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollNext), NULL, this);
-    m_toggleButtonCoord->Connect(wxEVT_COMMAND_TOGGLEBUTTON_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnToggleShowCoord), NULL, this);
+    m_panelVideo->Connect(wxEVT_PAINT, wxPaintEventHandler(MainFrameBaseClass::OnPaint), NULL, this);
     m_timerScroll->Connect(wxEVT_TIMER, wxTimerEventHandler(MainFrameBaseClass::OnScrollbarTimer), NULL, this);
     
 }
@@ -141,7 +173,7 @@ MainFrameBaseClass::~MainFrameBaseClass()
     this->Disconnect(wxID_PAUSE, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollPause), NULL, this);
     this->Disconnect(wxID_REWIND, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollPrevious), NULL, this);
     this->Disconnect(wxID_FORWARD, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollNext), NULL, this);
-    m_toggleButtonCoord->Disconnect(wxEVT_COMMAND_TOGGLEBUTTON_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnToggleShowCoord), NULL, this);
+    m_panelVideo->Disconnect(wxEVT_PAINT, wxPaintEventHandler(MainFrameBaseClass::OnPaint), NULL, this);
     m_timerScroll->Disconnect(wxEVT_TIMER, wxTimerEventHandler(MainFrameBaseClass::OnScrollbarTimer), NULL, this);
     
     m_auimgr19->UnInit();
