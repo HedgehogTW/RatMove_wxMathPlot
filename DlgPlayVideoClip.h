@@ -15,7 +15,11 @@ public:
 	
 	void PlayVideoClip(int start, int end);
 	void setImage(cv::Mat& mat);
+	void showProfileSegment(int start, int end);
+	void setSignalSegment(vector<float> &vecFD, vector<float>& vecSmoothFD, 
+			vector<float>& vecDesired, vector<float>& vecPredict);
 	
+	int 		m_szSignal;
 	bool 		m_bStop;
 	bool 		m_bPause;
 	wxBitmap* 	m_pBitmap;

@@ -38,7 +38,7 @@ void MyPlotSegment::showProfileSegment(int start, int end)
 		to = m_szSignal;
 		
 	m_plot->Fit(from, to, 0, 2000);		
-	Refresh();
+
 }
 void MyPlotSegment::setSignalSegment(vector<float> &vecFD, vector<float>& vecSmoothFD, 
 		vector<float>& vecDesired, vector<float>& vecPredict)

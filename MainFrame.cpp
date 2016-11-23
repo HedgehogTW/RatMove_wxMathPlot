@@ -376,9 +376,11 @@ void MainFrame::OnScrollbarTimer(wxTimerEvent& event)
 		m_timerScroll->Stop();
 		if(m_pDlgVideo) {
 			m_pDlgVideo->Show();
+
+			m_pDlgVideo->showProfileSegment(lick_start, lick_end);	
+			m_pDlgVideo->Update() ;
 			m_pDlgVideo->PlayVideoClip(lick_start, lick_end);
-MyPlotSegment* pPlotSegment = m_pDlgVideo->getPanelProfile();
-		pPlotSegment->showProfileSegment(lick_start, lick_end);			
+						m_pDlgVideo->Update() ;
 		}
 		wxBell();
 //		PlayVideoClip(lick_start, lick_end);
@@ -432,9 +434,10 @@ void MainFrame::OnScrollPause(wxCommandEvent& event)
 	myMsgOutput( "OnScrollPause: \n");
 	m_timerScroll->Stop();
 
-		MyPlotSegment* pPlotSegment = m_pDlgVideo->getPanelProfile();
-		pPlotSegment->showProfileSegment(6000, 7000);	
-			m_pDlgVideo->Show();
+	m_pDlgVideo->Show();
+	m_pDlgVideo->showProfileSegment(6000, 7000);	
+
+	m_pDlgVideo->Update() ;
 }
 
 void MainFrame::OnScrollNext(wxCommandEvent& event)
