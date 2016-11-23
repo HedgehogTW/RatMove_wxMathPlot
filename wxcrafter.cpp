@@ -61,10 +61,6 @@ MainFrameBaseClass::MainFrameBaseClass(wxWindow* parent, wxWindowID id, const wx
     m_auibar21->AddTool(wxID_DATA_AUTO_SCROLL, _("Auto Scrolling"), wxXmlResource::Get()->LoadBitmap(wxT("play")), wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT(""), NULL);
     
     m_auibar21->AddTool(wxID_PAUSE, _("Pause"), wxXmlResource::Get()->LoadBitmap(wxT("pause")), wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT(""), NULL);
-    
-    m_auibar21->AddTool(wxID_REWIND, _("Previous"), wxXmlResource::Get()->LoadBitmap(wxT("previous")), wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT(""), NULL);
-    
-    m_auibar21->AddTool(wxID_FORWARD, _("Next"), wxXmlResource::Get()->LoadBitmap(wxT("skip")), wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT(""), NULL);
     m_auibar21->Realize();
     
     m_panelPlot = new MyPlot(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTAB_TRAVERSAL);
@@ -99,13 +95,20 @@ MainFrameBaseClass::MainFrameBaseClass(wxWindow* parent, wxWindowID id, const wx
     wxBoxSizer* boxSizer85 = new wxBoxSizer(wxVERTICAL);
     m_panel83->SetSizer(boxSizer85);
     
-    m_button87 = new wxButton(m_panel83, wxID_ANY, _("My Button"), wxDefaultPosition, wxDLG_UNIT(m_panel83, wxSize(-1,-1)), 0);
+    m_buttonAccept = new wxButton(m_panel83, wxID_ANY, _("Accept"), wxDefaultPosition, wxDLG_UNIT(m_panel83, wxSize(-1,-1)), 0);
+    m_buttonAccept->SetBackgroundColour(wxColour(wxT("rgb(128,255,0)")));
     
-    boxSizer85->Add(m_button87, 0, wxALL, WXC_FROM_DIP(5));
+    boxSizer85->Add(m_buttonAccept, 0, wxALL, WXC_FROM_DIP(5));
     
-    m_button89 = new wxButton(m_panel83, wxID_ANY, _("My Button"), wxDefaultPosition, wxDLG_UNIT(m_panel83, wxSize(-1,-1)), 0);
+    m_buttonPartialAccept = new wxButton(m_panel83, wxID_ANY, _("Partial Accept"), wxDefaultPosition, wxDLG_UNIT(m_panel83, wxSize(-1,-1)), 0);
+    m_buttonPartialAccept->SetBackgroundColour(wxColour(wxT("rgb(255,255,0)")));
     
-    boxSizer85->Add(m_button89, 0, wxALL, WXC_FROM_DIP(5));
+    boxSizer85->Add(m_buttonPartialAccept, 0, wxALL, WXC_FROM_DIP(5));
+    
+    m_buttonReject = new wxButton(m_panel83, wxID_ANY, _("Reject"), wxDefaultPosition, wxDLG_UNIT(m_panel83, wxSize(-1,-1)), 0);
+    m_buttonReject->SetBackgroundColour(wxColour(wxT("rgb(255,0,0)")));
+    
+    boxSizer85->Add(m_buttonReject, 0, wxALL, WXC_FROM_DIP(5));
     
     m_panel71 = new wxPanel(m_panelVideoView, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(m_panelVideoView, wxSize(-1,-1)), wxTAB_TRAVERSAL);
     
@@ -114,17 +117,25 @@ MainFrameBaseClass::MainFrameBaseClass(wxWindow* parent, wxWindowID id, const wx
     wxBoxSizer* boxSizer73 = new wxBoxSizer(wxHORIZONTAL);
     m_panel71->SetSizer(boxSizer73);
     
-    m_button75 = new wxButton(m_panel71, wxID_ANY, _("My Button"), wxDefaultPosition, wxDLG_UNIT(m_panel71, wxSize(-1,-1)), 0);
+    m_buttonReplay = new wxButton(m_panel71, wxID_ANY, _("Replay"), wxDefaultPosition, wxDLG_UNIT(m_panel71, wxSize(-1,-1)), 0);
     
-    boxSizer73->Add(m_button75, 0, wxALL, WXC_FROM_DIP(5));
+    boxSizer73->Add(m_buttonReplay, 0, wxALL, WXC_FROM_DIP(5));
     
-    m_button77 = new wxButton(m_panel71, wxID_ANY, _("My Button"), wxDefaultPosition, wxDLG_UNIT(m_panel71, wxSize(-1,-1)), 0);
+    m_buttonPlay = new wxButton(m_panel71, wxID_ANY, _("Play"), wxDefaultPosition, wxDLG_UNIT(m_panel71, wxSize(-1,-1)), 0);
     
-    boxSizer73->Add(m_button77, 0, wxALL, WXC_FROM_DIP(5));
+    boxSizer73->Add(m_buttonPlay, 0, wxALL, WXC_FROM_DIP(5));
+    
+    m_buttonPause = new wxButton(m_panel71, wxID_ANY, _("Pause"), wxDefaultPosition, wxDLG_UNIT(m_panel71, wxSize(-1,-1)), 0);
+    
+    boxSizer73->Add(m_buttonPause, 0, wxALL, WXC_FROM_DIP(5));
+    
+    m_buttonStop = new wxButton(m_panel71, wxID_ANY, _("Stop"), wxDefaultPosition, wxDLG_UNIT(m_panel71, wxSize(-1,-1)), 0);
+    
+    boxSizer73->Add(m_buttonStop, 0, wxALL, WXC_FROM_DIP(5));
     
     m_panelMsg = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTAB_TRAVERSAL);
     
-    m_auimgr19->AddPane(m_panelMsg, wxAuiPaneInfo().Name(wxT("MsgPane")).Caption(_("Message Pane")).Direction(wxAUI_DOCK_BOTTOM).Layer(0).Row(0).Position(1).BestSize(550,200).MinSize(550,200).MaxSize(550,200).CaptionVisible(true).MaximizeButton(false).CloseButton(false).MinimizeButton(false).PinButton(false));
+    m_auimgr19->AddPane(m_panelMsg, wxAuiPaneInfo().Name(wxT("MsgPane")).Caption(_("Message Pane")).Direction(wxAUI_DOCK_BOTTOM).Layer(0).Row(0).Position(1).BestSize(550,280).MinSize(550,280).MaxSize(550,280).CaptionVisible(true).MaximizeButton(false).CloseButton(false).MinimizeButton(false).PinButton(false));
     m_auimgr19->Update();
     
     wxBoxSizer* boxSizer29 = new wxBoxSizer(wxVERTICAL);
@@ -154,26 +165,40 @@ MainFrameBaseClass::MainFrameBaseClass(wxWindow* parent, wxWindowID id, const wx
     }
 #endif
     // Connect events
+    this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(MainFrameBaseClass::OnClose), NULL, this);
     this->Connect(m_menuItem7->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnExit), NULL, this);
     this->Connect(m_menuItemDataAutoScroll->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnDataAutoScrolling), NULL, this);
     this->Connect(m_menuItem9->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnAbout), NULL, this);
+    this->Connect(wxID_DATA_AUTO_SCROLL, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MainFrameBaseClass::OnUpdateUIAutoScroll), NULL, this);
     this->Connect(wxID_PAUSE, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollPause), NULL, this);
-    this->Connect(wxID_REWIND, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollPrevious), NULL, this);
-    this->Connect(wxID_FORWARD, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollNext), NULL, this);
     m_panelVideo->Connect(wxEVT_PAINT, wxPaintEventHandler(MainFrameBaseClass::OnPaint), NULL, this);
+    m_buttonAccept->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnAccept), NULL, this);
+    m_buttonPartialAccept->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnPartialAccept), NULL, this);
+    m_buttonReject->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnReject), NULL, this);
+    m_buttonReplay->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnVideoReplay), NULL, this);
+    m_buttonPlay->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnVideoPlay), NULL, this);
+    m_buttonPause->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnVideoPause), NULL, this);
+    m_buttonStop->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnVideoStop), NULL, this);
     m_timerScroll->Connect(wxEVT_TIMER, wxTimerEventHandler(MainFrameBaseClass::OnScrollbarTimer), NULL, this);
     
 }
 
 MainFrameBaseClass::~MainFrameBaseClass()
 {
+    this->Disconnect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(MainFrameBaseClass::OnClose), NULL, this);
     this->Disconnect(m_menuItem7->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnExit), NULL, this);
     this->Disconnect(m_menuItemDataAutoScroll->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnDataAutoScrolling), NULL, this);
     this->Disconnect(m_menuItem9->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnAbout), NULL, this);
+    this->Disconnect(wxID_DATA_AUTO_SCROLL, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MainFrameBaseClass::OnUpdateUIAutoScroll), NULL, this);
     this->Disconnect(wxID_PAUSE, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollPause), NULL, this);
-    this->Disconnect(wxID_REWIND, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollPrevious), NULL, this);
-    this->Disconnect(wxID_FORWARD, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnScrollNext), NULL, this);
     m_panelVideo->Disconnect(wxEVT_PAINT, wxPaintEventHandler(MainFrameBaseClass::OnPaint), NULL, this);
+    m_buttonAccept->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnAccept), NULL, this);
+    m_buttonPartialAccept->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnPartialAccept), NULL, this);
+    m_buttonReject->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnReject), NULL, this);
+    m_buttonReplay->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnVideoReplay), NULL, this);
+    m_buttonPlay->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnVideoPlay), NULL, this);
+    m_buttonPause->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnVideoPause), NULL, this);
+    m_buttonStop->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainFrameBaseClass::OnVideoStop), NULL, this);
     m_timerScroll->Disconnect(wxEVT_TIMER, wxTimerEventHandler(MainFrameBaseClass::OnScrollbarTimer), NULL, this);
     
     m_auimgr19->UnInit();

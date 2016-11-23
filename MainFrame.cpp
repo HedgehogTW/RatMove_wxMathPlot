@@ -24,7 +24,7 @@
 #define DESIRED_HIGH 1000
 
 #define PREDICT_LOW 800
-#define PREDICT_HIGH 1100
+#define PREDICT_HIGH 1200
 #define LABEL_HIGH 1200
 
 #define MIN_SEGMENT 20
@@ -32,6 +32,8 @@
 
 #define PAUSE_TIME 5000
 #define WAIT_TIME  10
+
+wxDEFINE_EVENT(wxEVT_MYTHREAD_FINISHED, wxThreadEvent);
 
 bool 		g_bStop;
 bool 		g_bPause;
@@ -69,11 +71,11 @@ MainFrame::MainFrame(wxWindow* parent)
 	m_DataPath = "D:/Dropbox/Rat_Lick/data/";
 #endif	
 	
-	m_DataCount = -1;
+	m_SignalSize = -1;
 	m_LeftWidth = 0;
 	ShowSignal();
 	
-
+	Bind(wxEVT_MYTHREAD_FINISHED, &MainFrame::OnThreadFinished, this);
 }
 
 MainFrame::~MainFrame()
@@ -155,11 +157,11 @@ bool MainFrame::LoadProfileData(std::string& filename)
 	}
 	fclose(fp);	
 	
-	m_DataCount =  m_vSignalFD.size();
+	m_SignalSize =  m_vSignalFD.size();
 	
 	Merge_Prune(m_vDesired, DESIRED_LOW, DESIRED_HIGH);
 	
-	MainFrame::myMsgOutput( "LoadProfileData(): read _labelData.csv, size %d\n",m_DataCount);	
+	MainFrame::myMsgOutput( "LoadProfileData(): read _labelData.csv, size %d\n",m_SignalSize);	
 	return true;
 	
 }
@@ -173,8 +175,8 @@ bool MainFrame::LoadPredictData(std::string& filename)
 		return false;		
 	}	
 	
-	if(m_DataCount > 0) {
-		m_vPredict.resize(m_DataCount, PREDICT_LOW);
+	if(m_SignalSize > 0) {
+		m_vPredict.resize(m_SignalSize, PREDICT_LOW);
 	}
 
 	int count = 0;
@@ -252,19 +254,21 @@ void MainFrame::Merge_Prune(std::vector<float> & vLabel, int low, int high)
 			len = 0;
 		}		
 	}
-	
-	
 }
 
-static void OnMouseVideo( int event, int x, int y, int, void* )
+wxThread::ExitCode MainFrame::Entry()
 {
-    if( event != cv::EVENT_LBUTTONDOWN )
-        return;
+	g_bStop = g_bPause = false;
 
-	g_bStop = true;
-	MainFrame::myMsgOutput( "OnMouseVideo: Stop\n");
+	PlayVideoClip(m_start, m_end);
+	wxBell();
+	if(! g_bStop)
+		PlayVideoClip(m_start, m_end);
+	wxBell();
+	
+    wxQueueEvent(this, new wxThreadEvent(wxEVT_MYTHREAD_FINISHED));
+    return (wxThread::ExitCode)0;
 }
-
 void MainFrame::PlayVideoClip(int start, int end)
 {
 	cv::VideoCapture vidCap;
@@ -279,17 +283,15 @@ void MainFrame::PlayVideoClip(int start, int end)
 	}
 
 	double fps = vidCap.get(CV_CAP_PROP_FPS);
-	MainFrame::myMsgOutput("ShowVideoClip from frame %d \n", start);	
-//	cv::namedWindow( "Video", 0 );
-//	cv::setMouseCallback( "Video", OnMouseVideo, 0 );
-	
-	if(start -30 > 0) start -= 30;
-	if(end + 30 < m_DataCount)  end += 30;
+	MainFrame::myMsgOutput("ShowVideoClip from frame %d \n", m_start);	
+
+	if(start -15 > 0) start -= 15;
+	if(end + 15 < m_SignalSize)  end += 15;
 	
 	int frameNumber = 0;
-	g_bStop = g_bPause = false;
+
 	wxBeginBusyCursor();
-	while(frameNumber < start){
+	while(frameNumber < m_start){
 		frameNumber++;	
 		vidCap >> img_input;
 		if (img_input.empty()) break;
@@ -298,7 +300,7 @@ void MainFrame::PlayVideoClip(int start, int end)
 	
 	mpWindow *pPlotWin = GetPanelPlot()->GetPlotWin();
 	mpMovableObject* pLine = GetPanelPlot()->GetLineObjPtr();
-//	wxCoord xp = pPlotWin->x2p(start);
+
 	pLine->SetVisible(true);
 	pLine->SetCoordinateBase(frameNumber, 100);
     pPlotWin->UpdateAll();
@@ -324,24 +326,15 @@ void MainFrame::PlayVideoClip(int start, int end)
 		wxStatusBar* statusBar = MainFrame::m_pThis->GetStatusBar() ;
 		statusBar->SetStatusText(str, 3);
 		
-//		pLine->SetCoordinateBase(frameNumber, -100);
-//		pPlotWin->UpdateAll();
+		pLine->SetCoordinateBase(frameNumber, -100);
+		pPlotWin->UpdateAll();
 		frameNumber++;
 		if(frameNumber > end)  break;
 		//if(cv::waitKey(1) >= 0) break;
-		wxMilliSleep(100);
-	}while(1);			
+		wxMilliSleep(30);
+	}while(1);		
 }
-void MainFrame::OnVideoPause(wxCommandEvent& event)
-{
-	g_bPause = true;
-	myMsgOutput( "OnVideoPause: wait %d milliseconds.\n", PAUSE_TIME);	
-}
-void MainFrame::OnVideoStop(wxCommandEvent& event)
-{
-	g_bStop = true;
-	myMsgOutput( "OnVideoStop\n");	
-}
+
 void MainFrame::OnScrollbarTimer(wxTimerEvent& event)
 {
 	mpWindow *pPlotWin = GetPanelPlot()->GetPlotWin();
@@ -359,14 +352,25 @@ void MainFrame::OnScrollbarTimer(wxTimerEvent& event)
 	if(lickFrame > 0) {
 		myMsgOutput("x %.1f, start %d, lickFrame %d, [%d, %d]\n", x, start, lickFrame, lick_start, lick_end);
 		m_timerScroll->Stop();
-		PlayVideoClip(lick_start, lick_end);
-		wxBell();
+		m_start = lick_start;
+		m_end = lick_end;
+		if (CreateThread(wxTHREAD_JOINABLE) != wxTHREAD_NO_ERROR) {
+			wxLogError("Could not create the worker thread!");
+			return;
+		}
+		if(GetThread()->Run() != wxTHREAD_NO_ERROR) {
+			wxLogError("Could not run the worker thread!");
+			return;
+		}
+		myMsgOutput( "CreateThread...\n");
+		//PlayVideoClip(lick_start, lick_end);
+//		wxBell();
 //		PlayVideoClip(lick_start, lick_end);
 //		wxBell();
 		x = lick_end - m_LeftWidth - m_CenterX +2;
 	}else
 		x += 200;
-	if(x < m_DataCount-2000 )
+	if(x < m_SignalSize-2000 )
 		pPlotWin->SetPosX(x);
 	else
 		m_timerScroll->Stop();
@@ -387,13 +391,13 @@ int MainFrame::checkLabel(int start, int& lick_start, int& lick_end )
 		}
 	
 	if(bFound) {
-		for(i=lick_start; i<m_DataCount; i++)
+		for(i=lick_start; i<m_SignalSize; i++)
 			if(m_vPredict[i] == PREDICT_LOW) {
 				lick_end = i-1;
 				break;
 			}
-		if(i==m_DataCount)
-			lick_end = m_DataCount -1;
+		if(i==m_SignalSize)
+			lick_end = m_SignalSize -1;
 			
 	}
 	
@@ -404,6 +408,7 @@ int MainFrame::checkLabel(int start, int& lick_start, int& lick_end )
 }
 void MainFrame::OnDataAutoScrolling(wxCommandEvent& event)
 {
+	
 	m_timerScroll->Start(100);
 }
 
@@ -411,13 +416,6 @@ void MainFrame::OnScrollPause(wxCommandEvent& event)
 {
 	myMsgOutput( "OnScrollPause: \n");
 	m_timerScroll->Stop();
-}
-
-void MainFrame::OnScrollNext(wxCommandEvent& event)
-{
-}
-void MainFrame::OnScrollPrevious(wxCommandEvent& event)
-{
 }
 
 void MainFrame::OnToggleShowCoord(wxCommandEvent& event)
@@ -432,4 +430,73 @@ void MainFrame::OnPaint(wxPaintEvent& event)
 //	wxPaintDC dc(this);
 //    if(m_pBitmap)	dc.DrawBitmap(*m_pBitmap, 0, 0, false);
 
+}
+void MainFrame::OnClose(wxCloseEvent& event)
+{
+	if (GetThread() && // DoStartALongTask() may have not been called
+		GetThread()->IsRunning()) {
+			g_bStop = true;
+			GetThread()->Wait();
+		}
+	Destroy();	
+}
+void MainFrame::OnThreadFinished(wxThreadEvent& evt)
+{
+	myMsgOutput( "OnThreadFinished.\n");
+	
+}
+void MainFrame::OnVideoReplay(wxCommandEvent& event)
+{
+	if (GetThread()->IsAlive())  return;
+	if (CreateThread(wxTHREAD_JOINABLE) != wxTHREAD_NO_ERROR) {
+		wxLogError("Could not create the worker thread!");
+		return;
+	}
+	if(GetThread()->Run() != wxTHREAD_NO_ERROR) {
+		wxLogError("Could not run the worker thread!");
+		return;
+	}
+	myMsgOutput( "OnVideoReplay::CreateThread...\n");	
+}
+void MainFrame::OnVideoPause(wxCommandEvent& event)
+{
+	if(GetThread()->IsAlive()) {
+		GetThread()->Pause();
+	}
+}
+void MainFrame::OnVideoStop(wxCommandEvent& event)
+{
+	g_bStop = true;
+//	if (GetThread()->IsAlive()){		
+//		GetThread()->Wait();
+//	}	
+}
+void MainFrame::OnVideoPlay(wxCommandEvent& event)
+{
+	if (GetThread()->IsAlive()){
+		GetThread()->Resume();
+	}	
+}
+void MainFrame::OnUpdateUIAutoScroll(wxUpdateUIEvent& event)
+{
+	if(GetThread()) {
+		bool bAlive = GetThread()->IsAlive();
+		event.Enable(!bAlive);
+	}else
+		event.Enable(true);
+}
+void MainFrame::OnAccept(wxCommandEvent& event)
+{
+	m_panelPlot->SegmentLabel(m_start, m_end, 1);
+	myMsgOutput( "Accept frame %d\n", m_start);	
+}
+void MainFrame::OnPartialAccept(wxCommandEvent& event)
+{
+	m_panelPlot->SegmentLabel(m_start, m_end, 0);
+	myMsgOutput( "Partial Accept frame %d\n", m_start);	
+}
+void MainFrame::OnReject(wxCommandEvent& event)
+{
+	m_panelPlot->SegmentLabel(m_start, m_end, -1);
+	myMsgOutput( "Reject frame %d\n", m_start);	
 }

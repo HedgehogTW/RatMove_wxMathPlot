@@ -3,6 +3,4 @@
   <!-- Handler Generation is ON -->
   <object class="wxBitmap" name="pause">pause.png</object>
   <object class="wxBitmap" name="play">play.png</object>
-  <object class="wxBitmap" name="previous">previous.png</object>
-  <object class="wxBitmap" name="skip">skip.png</object>
 </resource>

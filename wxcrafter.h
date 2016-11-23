@@ -51,7 +51,6 @@ public:
     enum {
         wxID_DATA_AUTO_SCROLL = 10001,
         wxID_PAUSE = 10002,
-        wxID_REWIND = 10003,
     };
 protected:
     wxMenuBar* m_menuBar;
@@ -69,23 +68,33 @@ protected:
     wxPanel* m_panel69;
     MyVideoPanel* m_panelVideo;
     wxPanel* m_panel83;
-    wxButton* m_button87;
-    wxButton* m_button89;
+    wxButton* m_buttonAccept;
+    wxButton* m_buttonPartialAccept;
+    wxButton* m_buttonReject;
     wxPanel* m_panel71;
-    wxButton* m_button75;
-    wxButton* m_button77;
+    wxButton* m_buttonReplay;
+    wxButton* m_buttonPlay;
+    wxButton* m_buttonPause;
+    wxButton* m_buttonStop;
     wxPanel* m_panelMsg;
     wxTextCtrl* m_textCtrlMsg;
     wxTimer* m_timerScroll;
 
 protected:
+    virtual void OnClose(wxCloseEvent& event) { event.Skip(); }
     virtual void OnExit(wxCommandEvent& event) { event.Skip(); }
     virtual void OnDataAutoScrolling(wxCommandEvent& event) { event.Skip(); }
     virtual void OnAbout(wxCommandEvent& event) { event.Skip(); }
+    virtual void OnUpdateUIAutoScroll(wxUpdateUIEvent& event) { event.Skip(); }
     virtual void OnScrollPause(wxCommandEvent& event) { event.Skip(); }
-    virtual void OnScrollPrevious(wxCommandEvent& event) { event.Skip(); }
-    virtual void OnScrollNext(wxCommandEvent& event) { event.Skip(); }
     virtual void OnPaint(wxPaintEvent& event) { event.Skip(); }
+    virtual void OnAccept(wxCommandEvent& event) { event.Skip(); }
+    virtual void OnPartialAccept(wxCommandEvent& event) { event.Skip(); }
+    virtual void OnReject(wxCommandEvent& event) { event.Skip(); }
+    virtual void OnVideoReplay(wxCommandEvent& event) { event.Skip(); }
+    virtual void OnVideoPlay(wxCommandEvent& event) { event.Skip(); }
+    virtual void OnVideoPause(wxCommandEvent& event) { event.Skip(); }
+    virtual void OnVideoStop(wxCommandEvent& event) { event.Skip(); }
     virtual void OnScrollbarTimer(wxTimerEvent& event) { event.Skip(); }
 
 public:
@@ -94,12 +103,15 @@ public:
     wxAuiToolBar* GetAuibar21() { return m_auibar21; }
     MyPlot* GetPanelPlot() { return m_panelPlot; }
     MyVideoPanel* GetPanelVideo() { return m_panelVideo; }
-    wxButton* GetButton87() { return m_button87; }
-    wxButton* GetButton89() { return m_button89; }
+    wxButton* GetButtonAccept() { return m_buttonAccept; }
+    wxButton* GetButtonPartialAccept() { return m_buttonPartialAccept; }
+    wxButton* GetButtonReject() { return m_buttonReject; }
     wxPanel* GetPanel83() { return m_panel83; }
     wxPanel* GetPanel69() { return m_panel69; }
-    wxButton* GetButton75() { return m_button75; }
-    wxButton* GetButton77() { return m_button77; }
+    wxButton* GetButtonReplay() { return m_buttonReplay; }
+    wxButton* GetButtonPlay() { return m_buttonPlay; }
+    wxButton* GetButtonPause() { return m_buttonPause; }
+    wxButton* GetButtonStop() { return m_buttonStop; }
     wxPanel* GetPanel71() { return m_panel71; }
     wxPanel* GetPanelVideoView() { return m_panelVideoView; }
     wxTextCtrl* GetTextCtrlMsg() { return m_textCtrlMsg; }

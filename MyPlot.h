@@ -21,6 +21,8 @@ public:
 		
 	~MyPlot();
 
+	void SegmentLabel(int start, int end, int label);
+	
 	mpWindow * GetPlotWin() { return m_plot; }
 	void plotSignal(vector<float> &fd, vector<float>& smoothFD, 
 					vector<float>& desired, vector<float>& predict);

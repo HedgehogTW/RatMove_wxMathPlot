@@ -21,7 +21,38 @@ bool MyPlot::HasTransparentBackground()
 bool MyPlot::IsCanvasWindow() const
 {
 }
-
+void MyPlot::SegmentLabel(int start, int end, int label)
+{
+	std::vector<float> car_xs(2), car_ys(2);
+	car_xs[0]=start;  car_ys[0]=1600;
+    car_xs[1]=end;   car_ys[1]=1600;
+	
+	wxPen  pen;
+	wxString str;
+	pen.SetWidth(8);
+	pen.SetCap( wxCAP_PROJECTING);	
+	if(label ==1) {
+		pen.SetColour(wxColour(0,200,0));
+		str.Printf("%d", start);
+	}else if(label ==0) {
+		pen.SetColour(wxColour(200,200,0));
+		str.Printf("%d", start);
+	}else{
+		pen.SetColour(wxColour(200,0,0));
+		str.Printf("%d", start);
+	}
+	mpLayer* oldLayer =  m_plot->GetLayerByName(str);
+	if(oldLayer)  
+		m_plot->DelLayer(oldLayer, true);
+	
+    mpPolygon*	pLabel = new mpPolygon( str);	
+    pLabel->SetPen( pen );
+    pLabel->setPoints( car_xs,car_ys, true );
+	pLabel->SetDrawOutsideMargins(false);   	
+	
+	m_plot->AddLayer(pLabel);
+	m_plot->UpdateAll();
+}
 void MyPlot::plotSignal(vector<float> &vecFD, vector<float>& vecSmoothFD, 
 		vector<float>& vecDesired, vector<float>& vecPredict)
 {
@@ -71,7 +102,7 @@ void MyPlot::plotSignal(vector<float> &vecFD, vector<float>& vecSmoothFD,
     dc.GetSize( &neww, &newh );
 
     m_plot = new mpWindow( this, -1, wxPoint(0,0), wxSize(neww, newh), wxSIMPLE_BORDER );
-    mpScaleX* xaxis = new mpScaleX(wxT("X"), mpALIGN_BOTTOM, true, mpX_NORMAL);
+    mpScaleX* xaxis = new mpScaleX(wxT(""), mpALIGN_BOTTOM, true, mpX_NORMAL);
     mpScaleY* yaxis = new mpScaleY(wxT(""), mpALIGN_LEFT, true);
 	
 	wxFont graphFont(wxFontInfo(9).FaceName("Helvetica"));
@@ -93,7 +124,7 @@ void MyPlot::plotSignal(vector<float> &vecFD, vector<float>& vecSmoothFD,
     m_pLine->setPoints( car_xs,car_ys, true );
 	m_pLine->SetDrawOutsideMargins(false);    
 	
-	m_plot->SetMargins(30, 30, 50, 60);
+	m_plot->SetMargins(10, 30, 30, 60);
 
     m_plot->AddLayer( xaxis );
     m_plot->AddLayer( yaxis );	
@@ -102,6 +133,7 @@ void MyPlot::plotSignal(vector<float> &vecFD, vector<float>& vecSmoothFD,
 	m_plot->AddLayer( vectorLayerPredict );
 	m_plot->AddLayer( vectorLayerDesired );	
     m_plot->AddLayer( m_pLine );	
+	
 //	m_pLine->SetVisible(false);
 	
 	wxBrush hatch(wxColour(200,200,200), wxSOLID);
@@ -132,6 +164,6 @@ void MyPlot::plotSignal(vector<float> &vecFD, vector<float>& vecSmoothFD,
  //   ticks = true;
     m_plot->EnablefloatBuffer(true);
     m_plot->SetMPScrollbars(true);
-    m_plot->Fit(0, 3000, 0, 2500);	
+    m_plot->Fit(0, 3000, 0, 2100);	
 
 }

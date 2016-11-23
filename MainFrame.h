@@ -6,11 +6,12 @@
 #include <deque>
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <wx/thread.h>
 
-
+wxDECLARE_EVENT(wxEVT_MYTHREAD_FINISHED, wxThreadEvent);
 
 using namespace std;
-class MainFrame : public MainFrameBaseClass
+class MainFrame : public MainFrameBaseClass, public wxThreadHelper
 {
 public:
     MainFrame(wxWindow* parent);
@@ -27,6 +28,7 @@ public:
 		m_pThis->m_textCtrlMsg->ShowPosition(m_pThis->m_textCtrlMsg->GetLastPosition());
 	}
 
+	
     void OnExit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
 	
@@ -39,9 +41,11 @@ public:
 	
 	static MainFrame *	m_pThis;
 	std::string 	m_DataPath;
-	int				m_DataCount;
+	int				m_SignalSize;
 	float			m_LeftWidth;
 	int				m_CenterX;
+	int				m_start;
+	int				m_end;
 
 //	std::vector<int>  		m_vFrameNo; 
 	std::vector<float>  	m_vSignalFD;
@@ -50,16 +54,22 @@ public:
 	std::vector<float>  	m_vPredict;
 
 protected:
+    virtual void OnAccept(wxCommandEvent& event);
+    virtual void OnPartialAccept(wxCommandEvent& event);
+    virtual void OnReject(wxCommandEvent& event);
+    virtual void OnUpdateUIAutoScroll(wxUpdateUIEvent& event);
+    virtual void OnVideoPlay(wxCommandEvent& event);
+    virtual void OnVideoPause(wxCommandEvent& event);
+    virtual void OnVideoStop(wxCommandEvent& event);
+    virtual void OnVideoReplay(wxCommandEvent& event);
+    virtual void OnClose(wxCloseEvent& event);
     virtual void OnPaint(wxPaintEvent& event);
     virtual void OnToggleShowCoord(wxCommandEvent& event);
-    virtual void OnScrollNext(wxCommandEvent& event);
-    virtual void OnScrollPrevious(wxCommandEvent& event);
     virtual void OnScrollPause(wxCommandEvent& event);
     virtual void OnDataAutoScrolling(wxCommandEvent& event);
     virtual void OnScrollbarTimer(wxTimerEvent& event);
-    virtual void OnVideoPause(wxCommandEvent& event);
-    virtual void OnVideoStop(wxCommandEvent& event);
 
-    //virtual void OnDataShow(wxCommandEvent& event);
+	void OnThreadFinished(wxThreadEvent& evt);
+    virtual wxThread::ExitCode Entry();
 };
 #endif // MAINFRAME_H
