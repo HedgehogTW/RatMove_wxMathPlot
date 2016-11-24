@@ -13,6 +13,8 @@
     <File Name="MyPlot.h"/>
     <File Name="MyVideoPanel.cpp"/>
     <File Name="MyVideoPanel.h"/>
+    <File Name="DlgSysSetting.h"/>
+    <File Name="DlgSysSetting.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="MainFrame.h"/>
@@ -122,4 +124,14 @@
       </Completion>
     </Configuration>
   </Settings>
+  <VirtualDirectory Name="wxcrafter">
+    <File Name="dlg_setting.wxcp"/>
+    <VirtualDirectory Name="resources">
+      <File Name="dlg_setting_ratmove_wxmathplot_bitmaps.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="base">
+      <File Name="dlg_setting.h"/>
+      <File Name="dlg_setting.cpp"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
 </CodeLite_Project>

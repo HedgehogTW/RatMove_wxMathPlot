@@ -54,6 +54,8 @@ public:
 	std::vector<float>  	m_vPredict;
 
 protected:
+    virtual void OnFileLoadData(wxCommandEvent& event);
+    virtual void OnSetting(wxCommandEvent& event);
     virtual void OnAccept(wxCommandEvent& event);
     virtual void OnPartialAccept(wxCommandEvent& event);
     virtual void OnReject(wxCommandEvent& event);

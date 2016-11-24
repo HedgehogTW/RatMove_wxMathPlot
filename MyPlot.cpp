@@ -9,6 +9,7 @@ int lickRangeUp[GTNUM]  = {6084, 15404, 16362, 27048, 28604, 29360, 34164, 35098
 MyPlot::MyPlot(wxWindow *parent, wxWindowID id,	const wxPoint &pos,	const wxSize &size,	long style )
 		:wxPanel(parent, id)
 {
+	m_plot = NULL;
 }
 
 MyPlot::~MyPlot()
@@ -56,6 +57,12 @@ void MyPlot::SegmentLabel(int start, int end, int label)
 void MyPlot::plotSignal(vector<float> &vecFD, vector<float>& vecSmoothFD, 
 		vector<float>& vecDesired, vector<float>& vecPredict)
 {
+	if(m_plot != NULL) {
+		m_plot->DelAllLayers(true);
+		delete m_plot;
+		m_plot = NULL;
+	}
+	
 	mpFXYVector* vectorLayerFD = new mpFXYVector(_(""));
 	mpFXYVector* vectorLayersmoothFD = new mpFXYVector(_("smoothFD"));
 	mpFXYVector* vectorLayerDesired = new mpFXYVector(_("Desired"));

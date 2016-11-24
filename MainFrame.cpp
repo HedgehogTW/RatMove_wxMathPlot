@@ -17,6 +17,8 @@
 #include <wx/numdlg.h> 
 #include <wx/textdlg.h> 
 
+#include "DlgSysSetting.h"
+
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
@@ -65,22 +67,32 @@ MainFrame::MainFrame(wxWindow* parent)
 	m_auimgr19->GetArtProvider()->SetFont(wxAUI_DOCKART_CAPTION_FONT, font);
 	myMsgOutput("Hello.... Cute Rat ...\n");	
 
+	wxConfigBase *pConfig = wxConfigBase::Get();
+	m_DataPath = pConfig->Read("/set/dataPath", "");
+	
+	if(m_DataPath.empty()) {
 #if defined(unix) || defined(__unix) || defined(__unix__) || defined(__APPLE__) 	
-	m_DataPath = "~/tmp/";
+		m_DataPath = "~/tmp/";
 #else
-	m_DataPath = "D:/Dropbox/Rat_Lick/data/";
+		m_DataPath = "../data/";
 #endif	
+	}
 	
 	m_SignalSize = -1;
 	m_LeftWidth = 0;
 	ShowSignal();
 	
 	Bind(wxEVT_MYTHREAD_FINISHED, &MainFrame::OnThreadFinished, this);
+	
+	myMsgOutput("Data path: " + m_DataPath + "\n");
 }
 
 MainFrame::~MainFrame()
 {
 	g_bStop = true;
+	wxConfigBase *pConfig = wxConfigBase::Get();
+	pConfig->Write("/set/dataPath", wxString(m_DataPath));
+	
 }
 
 void MainFrame::OnExit(wxCommandEvent& event)
@@ -98,12 +110,25 @@ void MainFrame::OnAbout(wxCommandEvent& event)
     info.SetDescription(_("Short description goes here"));
     ::wxAboutBox(info);
 }
+void MainFrame::OnSetting(wxCommandEvent& event)
+{
+	DlgSysSetting  dlg(this);
+	dlg.SetDataPath(m_DataPath);
+	if(dlg.ShowModal() == wxID_CANCEL)  return;
+		
+	dlg.GetDataPath(m_DataPath);	
+	myMsgOutput("Data path: " + m_DataPath + "\n");
+	
+	wxConfigBase *pConfig = wxConfigBase::Get();
+	pConfig->Write("/set/dataPath", wxString(m_DataPath));	
+}
+void MainFrame::OnFileLoadData(wxCommandEvent& event)
+{
+	m_SignalSize = -1;
+	m_LeftWidth = 0;
+	ShowSignal();	
+}
 
-//void MainFrame::OnDataShow(wxCommandEvent& event)
-//{
-//	ShowSignal();
-
-//}
 void MainFrame::ShowSignal()
 {
 	string 	strProfileName  = m_DataPath + "_labelData.csv";
@@ -119,10 +144,10 @@ void MainFrame::ShowSignal()
 	m_LeftWidth = leftMar / xscale ; 
 	int XScreen = pPlotWin->GetXScreen();
 	m_CenterX = (XScreen-leftMar )/ (2*xscale);
-	myMsgOutput("XScreen %d, Xscale %f, %f\n", XScreen, xscale, XScreen/ xscale);
-	myMsgOutput("leftMar %d, Xscale %f, %f, centerX %d\n", leftMar, xscale, leftMar/ xscale, m_CenterX);
+//	myMsgOutput("XScreen %d, Xscale %f, %f\n", XScreen, xscale, XScreen/ xscale);
+//	myMsgOutput("leftMar %d, Xscale %f, %f, centerX %d\n", leftMar, xscale, leftMar/ xscale, m_CenterX);
 	
-	
+	m_start = m_end = -1;
 }
 
 
@@ -260,12 +285,13 @@ wxThread::ExitCode MainFrame::Entry()
 {
 	g_bStop = g_bPause = false;
 
-	PlayVideoClip(m_start, m_end);
-	wxBell();
-	if(! g_bStop)
+	if(m_start > 0 && m_end > 0) {
 		PlayVideoClip(m_start, m_end);
-	wxBell();
-	
+		wxBell();
+		if(! g_bStop)
+			PlayVideoClip(m_start, m_end);
+		wxBell();
+	}
     wxQueueEvent(this, new wxThreadEvent(wxEVT_MYTHREAD_FINISHED));
     return (wxThread::ExitCode)0;
 }
@@ -447,7 +473,12 @@ void MainFrame::OnThreadFinished(wxThreadEvent& evt)
 }
 void MainFrame::OnVideoReplay(wxCommandEvent& event)
 {
-	if (GetThread()->IsAlive())  return;
+	if(GetThread()==NULL)  return;
+	
+	if (GetThread()->IsAlive())  {
+		GetThread()->Resume();
+		return;
+	}
 	if (CreateThread(wxTHREAD_JOINABLE) != wxTHREAD_NO_ERROR) {
 		wxLogError("Could not create the worker thread!");
 		return;
@@ -460,19 +491,24 @@ void MainFrame::OnVideoReplay(wxCommandEvent& event)
 }
 void MainFrame::OnVideoPause(wxCommandEvent& event)
 {
+	if(GetThread()==NULL)  return;
 	if(GetThread()->IsAlive()) {
 		GetThread()->Pause();
 	}
 }
 void MainFrame::OnVideoStop(wxCommandEvent& event)
 {
+	if(GetThread()==NULL)  return;
+	GetThread()->Resume();
 	g_bStop = true;
+	
 //	if (GetThread()->IsAlive()){		
 //		GetThread()->Wait();
 //	}	
 }
 void MainFrame::OnVideoPlay(wxCommandEvent& event)
 {
+	if(GetThread()==NULL)  return;
 	if (GetThread()->IsAlive()){
 		GetThread()->Resume();
 	}	
@@ -487,16 +523,20 @@ void MainFrame::OnUpdateUIAutoScroll(wxUpdateUIEvent& event)
 }
 void MainFrame::OnAccept(wxCommandEvent& event)
 {
+	if(m_start < 0 || m_end < 0)  return;
 	m_panelPlot->SegmentLabel(m_start, m_end, 1);
 	myMsgOutput( "Accept frame %d\n", m_start);	
 }
 void MainFrame::OnPartialAccept(wxCommandEvent& event)
 {
+	if(m_start < 0 || m_end < 0)  return;
 	m_panelPlot->SegmentLabel(m_start, m_end, 0);
 	myMsgOutput( "Partial Accept frame %d\n", m_start);	
 }
 void MainFrame::OnReject(wxCommandEvent& event)
 {
+	if(m_start < 0 || m_end < 0)  return;
+	
 	m_panelPlot->SegmentLabel(m_start, m_end, -1);
 	myMsgOutput( "Reject frame %d\n", m_start);	
 }

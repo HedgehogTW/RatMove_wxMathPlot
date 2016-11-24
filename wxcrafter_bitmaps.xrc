@@ -3,4 +3,5 @@
   <!-- Handler Generation is ON -->
   <object class="wxBitmap" name="pause">pause.png</object>
   <object class="wxBitmap" name="play">play.png</object>
+  <object class="wxBitmap" name="toolbox">toolbox.png</object>
 </resource>

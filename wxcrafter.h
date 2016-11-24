@@ -50,12 +50,15 @@ class MainFrameBaseClass : public wxFrame
 public:
     enum {
         wxID_DATA_AUTO_SCROLL = 10001,
-        wxID_PAUSE = 10002,
+        wxID_FILE_SETTING = 10002,
+        wxID_PAUSE = 10003,
     };
 protected:
     wxMenuBar* m_menuBar;
     wxMenu* m_nameFile;
-    wxMenuItem* m_menuItem7;
+    wxMenuItem* m_menuItemLoad;
+    wxMenuItem* m_menuItemSetting;
+    wxMenuItem* m_menuItemExit;
     wxMenu* m_menuData;
     wxMenuItem* m_menuItemDataAutoScroll;
     wxMenu* m_nameHelp;
@@ -82,6 +85,8 @@ protected:
 
 protected:
     virtual void OnClose(wxCloseEvent& event) { event.Skip(); }
+    virtual void OnFileLoadData(wxCommandEvent& event) { event.Skip(); }
+    virtual void OnSetting(wxCommandEvent& event) { event.Skip(); }
     virtual void OnExit(wxCommandEvent& event) { event.Skip(); }
     virtual void OnDataAutoScrolling(wxCommandEvent& event) { event.Skip(); }
     virtual void OnAbout(wxCommandEvent& event) { event.Skip(); }

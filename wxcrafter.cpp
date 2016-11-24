@@ -29,8 +29,14 @@ MainFrameBaseClass::MainFrameBaseClass(wxWindow* parent, wxWindowID id, const wx
     m_nameFile = new wxMenu();
     m_menuBar->Append(m_nameFile, _("File"));
     
-    m_menuItem7 = new wxMenuItem(m_nameFile, wxID_EXIT, _("Exit\tAlt-X"), _("Quit"), wxITEM_NORMAL);
-    m_nameFile->Append(m_menuItem7);
+    m_menuItemLoad = new wxMenuItem(m_nameFile, wxID_ANY, _("Load Data"), wxT(""), wxITEM_NORMAL);
+    m_nameFile->Append(m_menuItemLoad);
+    
+    m_menuItemSetting = new wxMenuItem(m_nameFile, wxID_FILE_SETTING, _("Setting"), wxT(""), wxITEM_NORMAL);
+    m_nameFile->Append(m_menuItemSetting);
+    
+    m_menuItemExit = new wxMenuItem(m_nameFile, wxID_EXIT, _("Exit\tAlt-X"), _("Quit"), wxITEM_NORMAL);
+    m_nameFile->Append(m_menuItemExit);
     
     m_menuData = new wxMenu();
     m_menuBar->Append(m_menuData, _("Data"));
@@ -61,6 +67,10 @@ MainFrameBaseClass::MainFrameBaseClass(wxWindow* parent, wxWindowID id, const wx
     m_auibar21->AddTool(wxID_DATA_AUTO_SCROLL, _("Auto Scrolling"), wxXmlResource::Get()->LoadBitmap(wxT("play")), wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT(""), NULL);
     
     m_auibar21->AddTool(wxID_PAUSE, _("Pause"), wxXmlResource::Get()->LoadBitmap(wxT("pause")), wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT(""), NULL);
+    
+    m_auibar21->AddSeparator();
+    
+    m_auibar21->AddTool(wxID_FILE_SETTING, _("Setting"), wxXmlResource::Get()->LoadBitmap(wxT("toolbox")), wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT(""), NULL);
     m_auibar21->Realize();
     
     m_panelPlot = new MyPlot(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTAB_TRAVERSAL);
@@ -166,7 +176,9 @@ MainFrameBaseClass::MainFrameBaseClass(wxWindow* parent, wxWindowID id, const wx
 #endif
     // Connect events
     this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(MainFrameBaseClass::OnClose), NULL, this);
-    this->Connect(m_menuItem7->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnExit), NULL, this);
+    this->Connect(m_menuItemLoad->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnFileLoadData), NULL, this);
+    this->Connect(m_menuItemSetting->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnSetting), NULL, this);
+    this->Connect(m_menuItemExit->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnExit), NULL, this);
     this->Connect(m_menuItemDataAutoScroll->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnDataAutoScrolling), NULL, this);
     this->Connect(m_menuItem9->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnAbout), NULL, this);
     this->Connect(wxID_DATA_AUTO_SCROLL, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MainFrameBaseClass::OnUpdateUIAutoScroll), NULL, this);
@@ -186,7 +198,9 @@ MainFrameBaseClass::MainFrameBaseClass(wxWindow* parent, wxWindowID id, const wx
 MainFrameBaseClass::~MainFrameBaseClass()
 {
     this->Disconnect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(MainFrameBaseClass::OnClose), NULL, this);
-    this->Disconnect(m_menuItem7->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnExit), NULL, this);
+    this->Disconnect(m_menuItemLoad->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnFileLoadData), NULL, this);
+    this->Disconnect(m_menuItemSetting->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnSetting), NULL, this);
+    this->Disconnect(m_menuItemExit->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnExit), NULL, this);
     this->Disconnect(m_menuItemDataAutoScroll->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnDataAutoScrolling), NULL, this);
     this->Disconnect(m_menuItem9->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MainFrameBaseClass::OnAbout), NULL, this);
     this->Disconnect(wxID_DATA_AUTO_SCROLL, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MainFrameBaseClass::OnUpdateUIAutoScroll), NULL, this);
