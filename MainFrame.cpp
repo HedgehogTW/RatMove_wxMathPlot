@@ -71,8 +71,8 @@ MainFrame::MainFrame(wxWindow* parent)
 	m_DataPath = pConfig->Read("/set/dataPath", "");
 	
 	if(m_DataPath.empty()) {
-#if defined(unix) || defined(__unix) || defined(__unix__) || defined(__APPLE__) 	
-		m_DataPath = "~/tmp/";
+#if defined(unix) || defined(__unix) || defined(__unix__) || defined(__APPLE__)
+		m_DataPath = "~/Dropbox/Rat_Lick/data1";
 #else
 		m_DataPath = "../data/";
 #endif	
