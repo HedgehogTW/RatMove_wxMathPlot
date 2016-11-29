@@ -50,8 +50,9 @@ class MainFrameBaseClass : public wxFrame
 public:
     enum {
         wxID_DATA_AUTO_SCROLL = 10001,
-        wxID_FILE_SETTING = 10002,
-        wxID_PAUSE = 10003,
+        wxID_FILE_LOAD = 10002,
+        wxID_FILE_SETTING = 10003,
+        wxID_PAUSE = 10004,
     };
 protected:
     wxMenuBar* m_menuBar;

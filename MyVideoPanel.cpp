@@ -26,6 +26,7 @@ void MyVideoPanel::setImage(cv::Mat& mat)
     int type = mat.type();
     int channel = mat.channels();
     bool ret = false;
+	cv::rectangle(mat, cv::Point(170, 2), cv::Point(315, 214), cv::Scalar(0, 0, 255), 2);
     if(type ==CV_8UC1) {
         cvtColor(mat, rgbOutput, CV_GRAY2RGB);
         ret = wxIm.Create(mat.cols, mat.rows, rgbOutput.data, true);	

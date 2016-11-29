@@ -121,11 +121,26 @@ void MainFrame::OnSetting(wxCommandEvent& event)
 	
 	wxConfigBase *pConfig = wxConfigBase::Get();
 	pConfig->Write("/set/dataPath", wxString(m_DataPath));	
+	
+	ShowSignal();	
 }
 void MainFrame::OnFileLoadData(wxCommandEvent& event)
 {
+	wxString strPath = wxDirSelector("Choose a folder", m_DataPath);
+	if ( strPath.empty() )  return;
+	
+	if(strPath.Last() != '/' || strPath.Last() != '\\')
+		strPath += "/";
+		
 	m_SignalSize = -1;
-	m_LeftWidth = 0;
+	m_LeftWidth = 0;	
+	m_DataPath = strPath;
+	
+	myMsgOutput("Data path: " + m_DataPath + "\n");
+	
+	wxConfigBase *pConfig = wxConfigBase::Get();
+	pConfig->Write("/set/dataPath", wxString(m_DataPath));	
+	
 	ShowSignal();	
 }
 
@@ -513,6 +528,8 @@ void MainFrame::OnVideoPlay(wxCommandEvent& event)
 		GetThread()->Resume();
 	}	
 }
+
+
 void MainFrame::OnUpdateUIAutoScroll(wxUpdateUIEvent& event)
 {
 	if(GetThread()) {

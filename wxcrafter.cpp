@@ -29,7 +29,7 @@ MainFrameBaseClass::MainFrameBaseClass(wxWindow* parent, wxWindowID id, const wx
     m_nameFile = new wxMenu();
     m_menuBar->Append(m_nameFile, _("File"));
     
-    m_menuItemLoad = new wxMenuItem(m_nameFile, wxID_ANY, _("Load Data"), wxT(""), wxITEM_NORMAL);
+    m_menuItemLoad = new wxMenuItem(m_nameFile, wxID_FILE_LOAD, _("Load Data"), wxT(""), wxITEM_NORMAL);
     m_nameFile->Append(m_menuItemLoad);
     
     m_menuItemSetting = new wxMenuItem(m_nameFile, wxID_FILE_SETTING, _("Setting"), wxT(""), wxITEM_NORMAL);
@@ -71,6 +71,8 @@ MainFrameBaseClass::MainFrameBaseClass(wxWindow* parent, wxWindowID id, const wx
     m_auibar21->AddSeparator();
     
     m_auibar21->AddTool(wxID_FILE_SETTING, _("Setting"), wxXmlResource::Get()->LoadBitmap(wxT("toolbox")), wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT(""), NULL);
+    
+    m_auibar21->AddTool(wxID_FILE_LOAD, _("Load Data"), wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR, wxDefaultSize), wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT(""), NULL);
     m_auibar21->Realize();
     
     m_panelPlot = new MyPlot(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTAB_TRAVERSAL);
@@ -96,7 +98,7 @@ MainFrameBaseClass::MainFrameBaseClass(wxWindow* parent, wxWindowID id, const wx
     
     m_panelVideo = new MyVideoPanel(m_panel69, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(m_panel69, wxSize(-1,-1)), wxTAB_TRAVERSAL);
     
-    boxSizer79->Add(m_panelVideo, 1, wxALL|wxEXPAND, WXC_FROM_DIP(5));
+    boxSizer79->Add(m_panelVideo, 1, wxLEFT|wxTOP|wxEXPAND, WXC_FROM_DIP(5));
     
     m_panel83 = new wxPanel(m_panel69, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(m_panel69, wxSize(-1,-1)), wxTAB_TRAVERSAL);
     
@@ -145,7 +147,7 @@ MainFrameBaseClass::MainFrameBaseClass(wxWindow* parent, wxWindowID id, const wx
     
     m_panelMsg = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxTAB_TRAVERSAL);
     
-    m_auimgr19->AddPane(m_panelMsg, wxAuiPaneInfo().Name(wxT("MsgPane")).Caption(_("Message Pane")).Direction(wxAUI_DOCK_BOTTOM).Layer(0).Row(0).Position(1).BestSize(550,280).MinSize(550,280).MaxSize(550,280).CaptionVisible(true).MaximizeButton(false).CloseButton(false).MinimizeButton(false).PinButton(false));
+    m_auimgr19->AddPane(m_panelMsg, wxAuiPaneInfo().Name(wxT("MsgPane")).Caption(_("Message Pane")).Direction(wxAUI_DOCK_BOTTOM).Layer(0).Row(0).Position(1).BestSize(520,280).MinSize(520,280).MaxSize(520,280).CaptionVisible(true).MaximizeButton(false).CloseButton(false).MinimizeButton(false).PinButton(false));
     m_auimgr19->Update();
     
     wxBoxSizer* boxSizer29 = new wxBoxSizer(wxVERTICAL);
