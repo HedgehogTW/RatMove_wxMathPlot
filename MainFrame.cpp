@@ -163,6 +163,7 @@ void MainFrame::ShowSignal()
 //	myMsgOutput("leftMar %d, Xscale %f, %f, centerX %d\n", leftMar, xscale, leftMar/ xscale, m_CenterX);
 	
 	m_start = m_end = -1;
+	wxBell();
 }
 
 
