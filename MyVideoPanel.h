@@ -11,7 +11,7 @@ public:
 		const wxSize &size = wxDefaultSize,	long style = wxTAB_TRAVERSAL);
 	~MyVideoPanel();
 
-	void MyVideoPanel::setImage(cv::Mat& mat);
+	void setImage(cv::Mat& mat);
 	
 	
 	wxBitmap* 	m_pBitmap;
