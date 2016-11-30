@@ -74,10 +74,12 @@ MainFrame::MainFrame(wxWindow* parent)
 #if defined(unix) || defined(__unix) || defined(__unix__) || defined(__APPLE__)
 		m_DataPath = "~/Dropbox/Rat_Lick/data1";
 #else
-		m_DataPath = "../data/";
+		m_DataPath = "";
 #endif	
 	}
-	
+	if(m_DataPath.back() != '/' && m_DataPath.back() != '\\')
+		m_DataPath += "/";
+		
 	m_SignalSize = -1;
 	m_LeftWidth = 0;
 	ShowSignal();
@@ -129,7 +131,7 @@ void MainFrame::OnFileLoadData(wxCommandEvent& event)
 	wxString strPath = wxDirSelector("Choose a folder", m_DataPath);
 	if ( strPath.empty() )  return;
 	
-	if(strPath.Last() != '/' || strPath.Last() != '\\')
+	if(strPath.Last() != '/' && strPath.Last() != '\\')
 		strPath += "/";
 		
 	m_SignalSize = -1;
