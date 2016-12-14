@@ -20,8 +20,9 @@ void DlgSysSetting::SetDataPath(std::string path)
 void DlgSysSetting::GetDataPath(std::string& path)
 {
 	m_path = m_textCtrlDataPath->GetValue();
-	if(m_path.back() != '/' && m_path.back() != '\\')
-		m_path += "/";
+	if(! m_path.empty())
+		if(m_path.back() != '/' && m_path.back() != '\\')
+			m_path += "/";
 		
 	path = m_path;
 	
@@ -31,7 +32,7 @@ void DlgSysSetting::OnButtonBrowse(wxCommandEvent& event)
 	m_path = wxDirSelector("Choose a folder", m_path);
 	if ( !m_path.empty() ){
 		if(m_path.back() != '/' && m_path.back() != '\\')
-		m_path += "/";
+			m_path += "/";
 		m_textCtrlDataPath->SetValue(m_path);
 	}
 }

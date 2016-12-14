@@ -77,8 +77,9 @@ MainFrame::MainFrame(wxWindow* parent)
 		m_DataPath = "";
 #endif	
 	}
-	if(m_DataPath.back() != '/' && m_DataPath.back() != '\\')
-		m_DataPath += "/";
+	if(! m_DataPath.empty())
+		if(m_DataPath.back() != '/' && m_DataPath.back() != '\\')
+			m_DataPath += "/";
 		
 	m_SignalSize = -1;
 	m_LeftWidth = 0;
@@ -131,8 +132,9 @@ void MainFrame::OnFileLoadData(wxCommandEvent& event)
 	wxString strPath = wxDirSelector("Choose a folder", m_DataPath);
 	if ( strPath.empty() )  return;
 	
-	if(strPath.Last() != '/' && strPath.Last() != '\\')
-		strPath += "/";
+	if(! strPath.empty())
+		if(strPath.Last() != '/' && strPath.Last() != '\\')
+			strPath += "/";
 		
 	m_SignalSize = -1;
 	m_LeftWidth = 0;	
