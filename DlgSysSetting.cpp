@@ -31,7 +31,7 @@ void DlgSysSetting::OnButtonBrowse(wxCommandEvent& event)
 {
 	m_path = wxDirSelector("Choose a folder", m_path);
 	if ( !m_path.empty() ){
-		if(m_path.back() != '/' || m_path.back() != '\\')
+		if(m_path.back() != '/' && m_path.back() != '\\')
 			m_path += "/";
 		m_textCtrlDataPath->SetValue(m_path);
 	}
