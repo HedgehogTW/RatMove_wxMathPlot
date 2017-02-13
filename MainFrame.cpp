@@ -72,7 +72,7 @@ MainFrame::MainFrame(wxWindow* parent)
 	
 	if(m_DataPath.empty()) {
 #if defined(unix) || defined(__unix) || defined(__unix__) || defined(__APPLE__)
-		m_DataPath = "~/Dropbox/Rat_Lick/data1";
+		m_DataPath = "~/Dropbox/Rat_Lick/data";
 #else
 		m_DataPath = "";
 #endif	
