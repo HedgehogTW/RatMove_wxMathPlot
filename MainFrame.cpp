@@ -223,7 +223,7 @@ bool MainFrame::LoadPredictData(std::string& filename)
 	if(m_SignalSize > 0) {
 		m_vPredict.resize(m_SignalSize, PREDICT_LOW);
 	}
-
+	bool bBreak = false;
 	int count = 0;
 	int old_start = -1;
 	char title [200];
@@ -235,8 +235,18 @@ bool MainFrame::LoadPredictData(std::string& filename)
 		int n = fscanf(fp, "%*d,%d,%d,%d,%d", &label, &predict, &start, &end);
 		if(n!=4)  break;
 		if(predict ==1) {
-			for(int i=start; i<end; i++)
-				m_vPredict[i] = PREDICT_HIGH;			
+			bBreak = false;
+			for(int i=start; i<end; i++) {
+				if(i >= m_SignalSize) {
+					wxString msg;
+					msg.Printf("Error LoadPredictData(): i %d > m_SignalSize %d\n", i, m_SignalSize);
+					MainFrame::myMsgOutput( msg);
+					bBreak =true;
+					break;
+				}
+				m_vPredict[i] = PREDICT_HIGH;
+			}	
+			if(bBreak)  break;	
 		}
 
 		if(start < old_start) break;
